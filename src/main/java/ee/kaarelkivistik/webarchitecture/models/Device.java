@@ -7,7 +7,6 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "device")
 public class Device {
 
     @Id
@@ -17,6 +16,10 @@ public class Device {
     private long id;
 
     private String name;
+
+    @OneToOne
+    @JoinColumn(name = "device_type_fk", referencedColumnName = "device_type")
+    private DeviceType type;
 
     public Device() {
     }
