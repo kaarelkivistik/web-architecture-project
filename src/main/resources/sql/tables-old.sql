@@ -1,35 +1,6 @@
 
 
-CREATE SEQUENCE service_request_id;
-
-CREATE TABLE service_request 
-( service_request_id int NOT NULL DEFAULT nextval('service_request_id'),
-  customer_fk int,
-  created_by int,
-  created timestamp,
-  service_desc_by_customer text,
-  service_desc_by_employee text,
-  service_request_status_type_fk int,
-  CONSTRAINT service_request_pk PRIMARY KEY (service_request)
-);
-
-CREATE SEQUENCE service_order_id;
-
-CREATE TABLE service_order 
-( service_order_id int NOT NULL DEFAULT nextval('service_order_id'),
-  so_status_type_fk int,
-  created_by int,
-  service_request_fk int,
-  updated_by int,
-  created timestamp,
-  updated timestamp,
-  status_changed timestamp,
-  status_changed_by int,
-  price_total numeric,
-  note text,
-  CONSTRAINT service_order_pk PRIMARY KEY (service_order)
-);
-
+DROP SEQUENCE IF EXISTS service_note_id;
 CREATE SEQUENCE service_note_id;
 
 CREATE TABLE service_note 
@@ -45,43 +16,10 @@ CREATE TABLE service_note
 );
 
 
-CREATE SEQUENCE service_device_id;
-
-CREATE TABLE service_device 
-( service_device_id int NOT NULL DEFAULT nextval('service_device_id'),
-  service_device_status_type_fk int,
-  device_fk int,
-  service_order_fk int,
-  to_store timestamp,
-  from_store timestamp,
-  service_description text,
-  status_changed timestamp,
-  store_status numeric(1,0),
-  CONSTRAINT service_device_pk PRIMARY KEY (service_device)
-);
-
-CREATE TABLE service_device_status_type 
-( service_device_status_type_id int NOT NULL ,
-  type_name varchar(200),
-  CONSTRAINT service_device_status_type_pk PRIMARY KEY (service_device_status_type)
-);
-
-
-CREATE TABLE service_request_status_type 
-( service_request_status_type_id int NOT NULL ,
-  type_name varchar(200),
-  CONSTRAINT service_request_status_type_pk PRIMARY KEY (service_request_status_type)
-);
-
-
-CREATE TABLE so_status_type 
-( so_status_type_id int NOT NULL ,
-  type_name varchar(200),
-  CONSTRAINT so_status_type_pk PRIMARY KEY (so_status_type)
-);
 
 
 
+DROP SEQUENCE IF EXISTS service_action_id;
 CREATE SEQUENCE service_action_id;
 
 CREATE TABLE service_action 
@@ -99,6 +37,7 @@ CREATE TABLE service_action
   CONSTRAINT service_action_pk PRIMARY KEY (service_action)
 );
 
+DROP SEQUENCE IF EXISTS service_part_id;
 CREATE SEQUENCE service_part_id;
 
 CREATE TABLE service_part
@@ -121,6 +60,7 @@ CREATE TABLE service_action_status_type
   CONSTRAINT service_action_status_type_pk PRIMARY KEY (service_action_status_type)
 );
 
+DROP SEQUENCE IF EXISTS service_type_id;
 CREATE SEQUENCE service_type_id;
 
 CREATE TABLE service_type 
@@ -142,6 +82,7 @@ CREATE TABLE service_unit_type
 );
 
 
+DROP SEQUENCE IF EXISTS invoice_id;
 CREATE SEQUENCE invoice_id;
 
 CREATE TABLE invoice 
@@ -167,6 +108,7 @@ CREATE TABLE invoice_status_type
 );
 
 
+DROP SEQUENCE IF EXISTS invoice_row_id;
 CREATE SEQUENCE invoice_row_id;
 
 CREATE TABLE invoice_row 

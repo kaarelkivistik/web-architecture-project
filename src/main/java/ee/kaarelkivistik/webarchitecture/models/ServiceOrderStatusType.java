@@ -3,13 +3,15 @@ package ee.kaarelkivistik.webarchitecture.models;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Created by kaarel on 23.05.16.
  */
 
 @Entity
-public class ServiceDeviceStatusType {
+@Table(name = "so_status_type")
+public class ServiceOrderStatusType {
 
     @Id
     private Integer id;
@@ -17,9 +19,9 @@ public class ServiceDeviceStatusType {
     @Column(name = "type_name")
     private String name;
 
-    public ServiceDeviceStatusType() {}
+    public ServiceOrderStatusType() {}
 
-    public ServiceDeviceStatusType(Integer id, String name) {
+    public ServiceOrderStatusType(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -42,7 +44,7 @@ public class ServiceDeviceStatusType {
 
     @Override
     public String toString() {
-        return "ServiceDeviceStatusType{" +
+        return "ServiceOrderStatusType{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

@@ -5,21 +5,19 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- * Created by kaarel on 23.05.16.
+ * Created by kaarel on 24.05.16.
  */
-
 @Entity
-public class ServiceDeviceStatusType {
+public class Employee {
 
     @Id
     private Integer id;
 
-    @Column(name = "type_name")
     private String name;
 
-    public ServiceDeviceStatusType() {}
+    public Employee() {}
 
-    public ServiceDeviceStatusType(Integer id, String name) {
+    public Employee(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -42,10 +40,9 @@ public class ServiceDeviceStatusType {
 
     @Override
     public String toString() {
-        return "ServiceDeviceStatusType{" +
+        return "Employee{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
     }
-
 }

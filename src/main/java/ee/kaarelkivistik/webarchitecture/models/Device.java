@@ -1,6 +1,10 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.rest.core.config.Projection;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -16,14 +20,18 @@ public class Device {
     @Column(name = "device_id")
     private Integer id;
 
+    @Size(max = 100)
+    @NotNull
     private String name;
 
     @OneToOne
     @JoinColumn(name = "device_type_id")
+    @NotNull
     private DeviceType type;
 
     @Size(max = 100)
     @Column(name = "reg_no")
+    @NotNull
     private String regNumber;
 
     private String description;
@@ -32,6 +40,7 @@ public class Device {
     private String model;
 
     @Size(max = 100)
+    @NotNull
     private String manufacturer;
 
     public Device() {
@@ -114,4 +123,16 @@ public class Device {
                 ", manufacturer='" + manufacturer + '\'' +
                 '}';
     }
+}
+
+@Projection(name = "inlineDeviceType", types = { Device.class })
+interface InlineDeviceType {
+
+    String getName();
+    String getRegNumber();
+    DeviceType getType();
+    String getDescription();
+    String getModel();
+    String getManufacturer();
+
 }
