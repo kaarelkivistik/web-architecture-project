@@ -30,14 +30,9 @@ public class DeviceTypeDAO {
                 .withTableName("device_type")
                 .usingGeneratedKeyColumns("device_type");
 
-        Integer superTypeFk = null;
-
-        if(deviceType.getSuperType() != null)
-            superTypeFk = deviceType.getSuperType().getId();
-
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("super_type_fk", superTypeFk);
+        map.put("super_type_id", deviceType.getSuperTypeId());
         map.put("level", deviceType.getLevel());
         map.put("type_name", deviceType.getName());
 

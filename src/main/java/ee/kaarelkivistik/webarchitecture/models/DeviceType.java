@@ -1,5 +1,7 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -16,9 +18,7 @@ public class DeviceType {
     @Column(name = "device_type_id")
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "super_type_id")
-    private DeviceType superType;
+    private Integer superTypeId;
 
     private short level;
 
@@ -41,12 +41,12 @@ public class DeviceType {
         this.id = id;
     }
 
-    public DeviceType getSuperType() {
-        return superType;
+    public Integer getSuperTypeId() {
+        return superTypeId;
     }
 
-    public void setSuperType(DeviceType superType) {
-        this.superType = superType;
+    public void setSuperTypeId(Integer superTypeId) {
+        this.superTypeId = superTypeId;
     }
 
     public short getLevel() {
@@ -66,33 +66,10 @@ public class DeviceType {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DeviceType that = (DeviceType) o;
-
-        if (level != that.level) return false;
-        if (!id.equals(that.id)) return false;
-        if (superType != null ? !superType.equals(that.superType) : that.superType != null) return false;
-        return name.equals(that.name);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + (superType != null ? superType.hashCode() : 0);
-        result = 31 * result + (int) level;
-        result = 31 * result + name.hashCode();
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "DeviceType{" +
                 "id=" + id +
-                ", superType=" + superType +
+                ", superType=" + superTypeId +
                 ", level=" + level +
                 ", name='" + name + '\'' +
                 '}';

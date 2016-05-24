@@ -125,14 +125,3 @@ public class Device {
     }
 }
 
-@Projection(name = "inlineDeviceType", types = { Device.class })
-interface InlineDeviceType {
-
-    String getName();
-    String getRegNumber();
-    DeviceType getType();
-    String getDescription();
-    String getModel();
-    String getManufacturer();
-
-}
