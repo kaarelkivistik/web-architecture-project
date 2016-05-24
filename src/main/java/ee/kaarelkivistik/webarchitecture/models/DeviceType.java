@@ -7,16 +7,17 @@ import javax.persistence.*;
  */
 
 @Entity
+@Table(name = "device_type")
 public class DeviceType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "device_type_id_generator")
     @SequenceGenerator(name = "device_type_id_generator", sequenceName = "device_type_id")
-    @Column(name = "device_type")
-    private Long id;
+    @Column(name = "device_type_id")
+    private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "device_type_fk", referencedColumnName = "device_type")
+    @JoinColumn(name = "super_type_id")
     private DeviceType superType;
 
     private short level;
@@ -32,11 +33,11 @@ public class DeviceType {
         this.name = name;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -72,18 +73,18 @@ public class DeviceType {
         DeviceType that = (DeviceType) o;
 
         if (level != that.level) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (!id.equals(that.id)) return false;
         if (superType != null ? !superType.equals(that.superType) : that.superType != null) return false;
-        return !(name != null ? !name.equals(that.name) : that.name != null);
+        return name.equals(that.name);
 
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = id.hashCode();
         result = 31 * result + (superType != null ? superType.hashCode() : 0);
         result = 31 * result + (int) level;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + name.hashCode();
         return result;
     }
 

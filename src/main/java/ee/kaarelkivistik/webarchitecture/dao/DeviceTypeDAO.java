@@ -1,6 +1,5 @@
 package ee.kaarelkivistik.webarchitecture.dao;
 
-import ee.kaarelkivistik.webarchitecture.models.Device;
 import ee.kaarelkivistik.webarchitecture.models.DeviceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by kaarel on 23.05.16.
@@ -32,7 +30,7 @@ public class DeviceTypeDAO {
                 .withTableName("device_type")
                 .usingGeneratedKeyColumns("device_type");
 
-        Long superTypeFk = null;
+        Integer superTypeFk = null;
 
         if(deviceType.getSuperType() != null)
             superTypeFk = deviceType.getSuperType().getId();
@@ -45,10 +43,10 @@ public class DeviceTypeDAO {
 
         Number number = simpleJdbcInsert.executeAndReturnKey(map);
 
-        deviceType.setId(number.longValue());
+        deviceType.setId(number.intValue());
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         jdbcTemplate.update("DELETE FROM device_type WHERE device_type = ?", id);
     }
 
@@ -56,7 +54,7 @@ public class DeviceTypeDAO {
         delete(deviceType.getId());
     }
 
-    public DeviceType findOne(Long id) {
+    public DeviceType findOne(Integer id) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM device_type WHERE device_type = ?", rowMapper, id);
         } catch(DataAccessException e) {
@@ -73,7 +71,7 @@ class DeviceTypeRowMapper implements RowMapper<DeviceType> {
     public DeviceType mapRow(ResultSet resultSet, int i) throws SQLException {
         DeviceType deviceType = new DeviceType(resultSet.getShort("level"), resultSet.getString("type_name"));
 
-        deviceType.setId(resultSet.getLong("device_type"));
+        deviceType.setId(resultSet.getInt("device_type"));
 
         return deviceType;
     }
