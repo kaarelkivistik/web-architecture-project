@@ -4,3 +4,6 @@
 node_modules
 *.log
 target
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/dataSources.local.xml
