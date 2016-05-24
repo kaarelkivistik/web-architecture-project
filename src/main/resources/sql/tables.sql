@@ -28,7 +28,7 @@ CREATE TABLE device_type
 ( device_type_id int NOT NULL,
   super_type_id int,
   level int NOT NULL,
-  type_name varchar(200),
+  type_name varchar(200) NOT NULL,
   CONSTRAINT device_type_pk PRIMARY KEY (device_type_id),
   CONSTRAINT device_super_type_fk FOREIGN KEY (super_type_id) REFERENCES device_type (device_type_id)
 );
@@ -78,12 +78,12 @@ CREATE SEQUENCE device_id;
 
 CREATE TABLE device 
 ( device_id int NOT NULL DEFAULT nextval('device_id'),
-  device_type_id int,
-  name varchar(100),
-  reg_no varchar(100),
+  device_type_id int NOT NULL,
+  name varchar(100) NOT NULL,
+  reg_no varchar(100) NOT NULL,
   description text,
   model varchar(100),
-  manufacturer varchar(100),
+  manufacturer varchar(100) NOT NULL,
   CONSTRAINT device_pk PRIMARY KEY (device_id),
   CONSTRAINT device_type_fk FOREIGN KEY (device_type_id) REFERENCES device_type
 );
