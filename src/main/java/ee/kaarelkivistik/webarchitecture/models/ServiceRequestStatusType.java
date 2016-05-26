@@ -12,6 +12,7 @@ import javax.persistence.Id;
 public class ServiceRequestStatusType {
 
     @Id
+    @Column(name = "service_request_status_type_id")
     private Integer id;
 
     @Column(name = "type_name")

@@ -1,5 +1,6 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 public class Customer {
 
     @Id
+    @Column(name = "customer_id")
     private Integer id;
 
     private String name;

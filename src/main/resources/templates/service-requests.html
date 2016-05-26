@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Remondiaktid</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="/resources/bootstrap.min.css" />
+    <link rel="stylesheet" href="/resources/styles.css" />
+</head>
+<body>
+
+    <div class="container">
+        <div th:replace="fragments :: #header"/>
+
+        <div class="content">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Klient</th>
+                        <th>Töötaja</th>
+                        <th>Staatus</th>
+                        <th>Kuupäev</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="serviceRequest : ${serviceRequests}">
+                            <td th:text="${serviceRequest.id}"></td>
+                            <td th:text="${serviceRequest.customer.name}"></td>
+                            <td th:text="${serviceRequest.createdBy.name}"></td>
+                            <td th:text="${serviceRequest.statusType.name}"></td>
+                            <td th:text="${serviceRequest.createdAt}"></td>
+                            <td class="text-xs-right">
+                                 <a class="btn btn-link" th:href="@{'/service-requests/' + ${serviceRequest.id}}">Ava</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

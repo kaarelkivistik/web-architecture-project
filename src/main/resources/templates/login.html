@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="/resources/bootstrap.min.css" />
+    <link rel="stylesheet" href="/resources/styles.css" />
+</head>
+<body>
+
+<div class="container" style="max-width: 400px">
+
+    <h3>Remonditeenus</h3>
+
+    <form th:action="@{/login}" method="post">
+        <div th:if="${param.error}" class="alert alert-danger">
+            Vigased andmed.
+        </div>
+
+        <div th:if="${param.logout}" class="alert alert-success">
+            Oled välja logitud.
+        </div>
+
+        <div class="form-group">
+            <label for="username">Kasutajanimi</label>
+            <input type="text" class="form-control" id="username" name="username"/>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Logi sisse</button>
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 public class Employee {
 
     @Id
+    @Column(name = "employee_id")
     private Integer id;
 
     private String name;

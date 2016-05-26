@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+
+    <div id="header">
+        <ul class="nav nav-tabs">
+            <li class="nav-item" th:each="page : ${@pageConfiguration.pages}">
+                <a class="nav-link"
+                   th:classappend="${#httpServletRequest.getRequestURI() == page.route ? 'active':''}"
+                   th:href="@{${page.route}}" th:text="${page.name}"/>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>

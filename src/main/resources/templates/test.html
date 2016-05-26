@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="/resources/bootstrap.min.css" />
+    <link rel="stylesheet" href="/resources/styles.css" />
+</head>
+<body>
+
+    <div class="container">
+        <div th:replace="fragments :: #header"/>
+
+        <div class="content">
+            <form method="POST" th:object="${fooBar}">
+                <div class="form-group">
+                    <input type="text" class="form-control" th:field="*{a}"/>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" class="form-control" th:field="*{b}"/>
+                </div>
+
+                <input type="submit" class="btn btn-primary"/>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

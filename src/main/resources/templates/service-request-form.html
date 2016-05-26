@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="/resources/bootstrap.min.css" />
+    <link rel="stylesheet" href="/resources/styles.css" />
+</head>
+<body>
+
+    <div class="container">
+        <div th:replace="fragments :: #header"/>
+
+        <div class="content">
+            <h3>Remondiakti koostamine</h3>
+
+            <form method="POST" th:object="${serviceRequest}" name="serviceRequest">
+                <input type="hidden" th:field="*{id}"/>
+
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('customer')}? has-danger">
+                    <label for="" class="control-label col-sm-4">Klient</label>
+
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input type="text" id="customerName"
+                                   class="form-control" readonly="true"
+                                   placeholder="Klient" th:value="${serviceRequest.customer}? ${serviceRequest.customer.name}" />
+                            <input type="hidden" th:field="*{customer}"/>
+
+                            <span class="input-group-btn">
+                                <button
+                                        class="btn btn-primary" type="button"
+                                        onclick="openCustomerSearch(event)">Otsi klienti</button>
+                            </span>
+                        </div>
+
+                        <div th:errors="${serviceRequest.customer}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label for="" class="control-label col-sm-4">Staatus</label>
+
+                    <div class="col-sm-8">
+                        <select class="form-control" th:field="*{statusType}">
+                            <option th:each="type : ${statusTypes}" th:value="${type.id}" th:text="${type.name}"/>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('descriptionByCustomer')}? has-danger">
+                    <label for="" class="control-label col-sm-4">Kliendi nägemus probleemist</label>
+
+                    <div class="col-sm-8">
+                        <textarea class="form-control" style="min-height: 100px"
+                                  th:field="*{descriptionByCustomer}" />
+
+                        <div th:errors="${serviceRequest.descriptionByCustomer}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('descriptionByEmployee')}? has-danger">
+                    <label for="" class="control-label col-sm-4">Töötaja kirjeldus</label>
+
+                    <div class="col-sm-8">
+                        <textarea class="form-control" style="min-height: 100px"
+                                  th:field="*{descriptionByEmployee}" />
+
+                        <div th:errors="${serviceRequest.descriptionByEmployee}"></div>
+                    </div>
+                </fieldset>
+            </form>
+
+            <form th:action="@{'/service-requests/' + ${id} + '/delete'}" method="post" style="display: inline" name="deleteServiceRequest"/>
+
+            <div>
+                <button class="btn btn-primary"
+                        onclick="document.forms.serviceRequest.submit()">Salvesta</button>
+                <button class="btn btn-danger"
+                        onclick="document.forms.deleteServiceRequest.submit()" th:if="${id}">Kustuta</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let searchWindow;
+
+        function openCustomerSearch(event) {
+            event.preventDefault();
+
+            searchWindow = open("http://localhost:8080/search/customer");
+        }
+
+        function customerSearchResultChosen(id, name) {
+            searchWindow.close();
+
+            document.forms.serviceRequest.querySelector("#customer").value = id;
+            document.forms.serviceRequest.querySelector("#customerName").value = name;
+        }
+    </script>
+
+</body>
+</html>
