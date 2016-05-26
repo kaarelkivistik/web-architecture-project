@@ -58,7 +58,7 @@ CREATE SEQUENCE customer_id;
 
 CREATE TABLE customer
 ( customer_id int NOT NULL DEFAULT nextval('customer_id'),
-  name varchar(100) NOT NULL,
+  name varchar(100) NOT NULL UNIQUE,
   CONSTRAINT customer_pk PRIMARY KEY (customer_id)
 );
 
@@ -67,7 +67,7 @@ CREATE SEQUENCE employee_id;
 
 CREATE TABLE employee
 ( employee_id int NOT NULL DEFAULT nextval('employee_id'),
-  name varchar(100) NOT NULL,
+  name varchar(100) NOT NULL UNIQUE,
   CONSTRAINT employee_pk PRIMARY KEY (employee_id)
 );
 
