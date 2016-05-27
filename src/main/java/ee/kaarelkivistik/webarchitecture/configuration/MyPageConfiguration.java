@@ -22,9 +22,9 @@ public class MyPageConfiguration {
     public MyPageConfiguration() {
         pages = new ArrayList<>();
 
-        pages.add(new Page("/service-requests", "Remondiaktid"));
-        pages.add(new Page("/service-requests/new", "Remondiakti koostamine"));
-        pages.add(new Page("/test", "Testimine"));
+        pages.add(new Page("/service-requests", "Remonditellimused"));
+        pages.add(new Page("/service-requests/new", "Remonditellimuse koostamine"));
+        // pages.add(new Page("/test", "Testimine"));
     }
 
     public ArrayList<Page> getPages() {
