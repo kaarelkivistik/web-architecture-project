@@ -1,13 +1,7 @@
 package ee.kaarelkivistik.webarchitecture.controllers;
 
-import ee.kaarelkivistik.webarchitecture.models.DeviceType;
-import ee.kaarelkivistik.webarchitecture.models.Employee;
-import ee.kaarelkivistik.webarchitecture.models.ServiceRequest;
-import ee.kaarelkivistik.webarchitecture.models.ServiceRequestStatusType;
-import ee.kaarelkivistik.webarchitecture.repository.DeviceTypeRepository;
-import ee.kaarelkivistik.webarchitecture.repository.EmployeeRepository;
-import ee.kaarelkivistik.webarchitecture.repository.ServiceRequestRepository;
-import ee.kaarelkivistik.webarchitecture.repository.ServiceRequestStatusTypeRepository;
+import ee.kaarelkivistik.webarchitecture.models.*;
+import ee.kaarelkivistik.webarchitecture.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
 
@@ -31,8 +26,15 @@ public class ServiceRequestController {
 
     public static final String SERVICE_REQUEST_FORM_TEMPLATE = "service-request-form";
     public static final String SERVICE_REQUESTS_TEMPLATE = "service-requests";
+
     @Autowired
     ServiceRequestRepository serviceRequestRepository;
+
+    @Autowired
+    ServiceOrderStatusTypeRepository serviceOrderStatusTypeRepository;
+
+    @Autowired
+    ServiceOrderRepository serviceOrderRepository;
 
     @Autowired
     EmployeeRepository employeeRepository;
@@ -74,14 +76,18 @@ public class ServiceRequestController {
         else {
             serviceRequestRepository.save(serviceRequest);
 
-            return "redirect:/service-requests";
+            return "redirect:/service-requests/" + serviceRequest.getId();
         }
     }
 
     @RequestMapping("/service-requests/{id}")
     public String showFormForServiceRequest(@PathVariable Integer id, Model model, Principal principal) {
 
-        model.addAttribute("serviceRequest", serviceRequestRepository.findOne(id));
+        ServiceRequest serviceRequest = serviceRequestRepository.findOne(id);
+
+        model.addAttribute("creating", false);
+        model.addAttribute("serviceRequest", serviceRequest);
+        model.addAttribute("serviceOrder",  serviceOrderRepository.findByServiceRequest(serviceRequest));
         model.addAttribute("statusTypes", serviceRequestStatusTypeRepository.findAll());
 
         return SERVICE_REQUEST_FORM_TEMPLATE;
@@ -108,9 +114,36 @@ public class ServiceRequestController {
 
     @RequestMapping(value = "/service-requests/{id}/delete", method = RequestMethod.POST)
     public String delete(@PathVariable Integer id) {
-        serviceRequestRepository.delete(id);
+        ServiceRequest serviceRequest = serviceRequestRepository.findOne(id);
+        ServiceOrder serviceOrder = serviceOrderRepository.findByServiceRequest(serviceRequest);
+
+        if(serviceOrder != null)
+            serviceOrderRepository.delete(serviceOrder);
+
+        serviceRequestRepository.delete(serviceRequest);
 
         return "redirect:/service-requests";
+    }
+
+    @RequestMapping(value = "/service-requests/{id}/create-service-order", method = RequestMethod.POST)
+    public String createServiceOrder(@PathVariable Integer id, Principal principal) {
+        ServiceRequest serviceRequest = serviceRequestRepository.findOne(id);
+
+        Employee employee = employeeRepository.findByName(principal.getName());
+
+        ServiceOrder serviceOrder = new ServiceOrder();
+
+        serviceOrder.setServiceRequest(serviceRequest);
+        serviceOrder.setCreatedBy(employee);
+        serviceOrder.setStatusChangedBy(employee);
+        serviceOrder.setCreatedAt(new Date());
+        serviceOrder.setStatusChangedAt(new Date());
+        serviceOrder.setPriceTotal(new BigDecimal(0));
+        serviceOrder.setStatusType(serviceOrderStatusTypeRepository.findOne(1));
+
+        serviceOrderRepository.save(serviceOrder);
+
+        return "redirect:/service-requests/" + serviceRequest.getId();
     }
 
 }

@@ -14,6 +14,7 @@ import javax.persistence.Table;
 public class ServiceOrderStatusType {
 
     @Id
+    @Column(name = "so_status_type_id")
     private Integer id;
 
     @Column(name = "type_name")

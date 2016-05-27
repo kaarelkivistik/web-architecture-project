@@ -13,8 +13,6 @@
         <div th:replace="fragments :: #header"/>
 
         <div class="content">
-            <h3>Remondiakti koostamine</h3>
-
             <form method="POST" th:object="${serviceRequest}" name="serviceRequest">
                 <input type="hidden" th:field="*{id}"/>
 
@@ -74,13 +72,26 @@
                 </fieldset>
             </form>
 
-            <form th:action="@{'/service-requests/' + ${id} + '/delete'}" method="post" style="display: inline" name="deleteServiceRequest"/>
+            <form th:action="@{'/service-requests/' + ${id} + '/delete'}" method="post" name="deleteServiceRequest"/>
+            <form th:action="@{'/service-requests/' + ${id} + '/create-service-order'}" method="post" name="createServiceOrder"/>
 
-            <div>
+            <div class="form-group">
                 <button class="btn btn-primary"
                         onclick="document.forms.serviceRequest.submit()">Salvesta</button>
                 <button class="btn btn-danger"
                         onclick="document.forms.deleteServiceRequest.submit()" th:if="${id}">Kustuta</button>
+            </div>
+
+            <div class="jumbotron" th:if="${creating == false} and ${serviceOrder == null}">
+                <h3>Remondikäsku ei eksisteeri</h3>
+                <button class="btn btn-primary"
+                        onclick="document.forms.createServiceOrder.submit()" th:if="${id}">Loo remondikäsk</button>
+            </div>
+
+            <div th:if="${serviceOrder}">
+                <hr/>
+
+                service-order
             </div>
         </div>
     </div>
