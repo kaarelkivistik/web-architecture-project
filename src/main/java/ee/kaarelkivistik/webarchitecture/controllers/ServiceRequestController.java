@@ -24,6 +24,8 @@ import java.util.Date;
 @Controller
 public class ServiceRequestController {
 
+    public static final int SERVICE_REQUEST_IN_PROGRESS_ID = 3;
+
     public static final String SERVICE_REQUEST_FORM_TEMPLATE = "service-request-form";
     public static final String SERVICE_REQUESTS_TEMPLATE = "service-requests";
 
@@ -41,6 +43,9 @@ public class ServiceRequestController {
 
     @Autowired
     ServiceRequestStatusTypeRepository serviceRequestStatusTypeRepository;
+
+    @Autowired
+    ServiceDeviceStatusTypeRepository serviceDeviceStatusTypeRepository;
 
     @InitBinder
     public void dataBinder(WebDataBinder binder) {
@@ -60,7 +65,8 @@ public class ServiceRequestController {
 
         model.addAttribute("creating", true);
         model.addAttribute("serviceRequest", new ServiceRequest());
-        model.addAttribute("statusTypes", serviceRequestStatusTypeRepository.findAll());
+        model.addAttribute("requestStatusTypes", serviceRequestStatusTypeRepository.findAll());
+        model.addAttribute("orderStatusTypes", serviceOrderStatusTypeRepository.findAll());
 
         return SERVICE_REQUEST_FORM_TEMPLATE;
     }
@@ -87,8 +93,16 @@ public class ServiceRequestController {
 
         model.addAttribute("creating", false);
         model.addAttribute("serviceRequest", serviceRequest);
-        model.addAttribute("serviceOrder",  serviceOrderRepository.findByServiceRequest(serviceRequest));
-        model.addAttribute("statusTypes", serviceRequestStatusTypeRepository.findAll());
+        model.addAttribute("serviceOrder", serviceRequest.getServiceOrder());
+        model.addAttribute("requestStatusTypes", serviceRequestStatusTypeRepository.findAll());
+        model.addAttribute("orderStatusTypes", serviceOrderStatusTypeRepository.findAll());
+        model.addAttribute("serviceDeviceStatusTypes", serviceDeviceStatusTypeRepository.findAll());
+
+        ServiceDevice serviceDevice = new ServiceDevice();
+
+        serviceDevice.setServiceOrder(serviceRequest.getServiceOrder());
+
+        model.addAttribute("serviceDevice", serviceDevice);
 
         return SERVICE_REQUEST_FORM_TEMPLATE;
     }
@@ -115,7 +129,7 @@ public class ServiceRequestController {
     @RequestMapping(value = "/service-requests/{id}/delete", method = RequestMethod.POST)
     public String delete(@PathVariable Integer id) {
         ServiceRequest serviceRequest = serviceRequestRepository.findOne(id);
-        ServiceOrder serviceOrder = serviceOrderRepository.findByServiceRequest(serviceRequest);
+        ServiceOrder serviceOrder = serviceRequest.getServiceOrder();
 
         if(serviceOrder != null)
             serviceOrderRepository.delete(serviceOrder);
@@ -127,21 +141,28 @@ public class ServiceRequestController {
 
     @RequestMapping(value = "/service-requests/{id}/create-service-order", method = RequestMethod.POST)
     public String createServiceOrder(@PathVariable Integer id, Principal principal) {
+
         ServiceRequest serviceRequest = serviceRequestRepository.findOne(id);
-
         Employee employee = employeeRepository.findByName(principal.getName());
-
         ServiceOrder serviceOrder = new ServiceOrder();
+
+        Date date = new Date();
 
         serviceOrder.setServiceRequest(serviceRequest);
         serviceOrder.setCreatedBy(employee);
         serviceOrder.setStatusChangedBy(employee);
-        serviceOrder.setCreatedAt(new Date());
-        serviceOrder.setStatusChangedAt(new Date());
+        serviceOrder.setUpdatedBy(employee);
+        serviceOrder.setCreatedAt(date);
+        serviceOrder.setStatusChangedAt(date);
+        serviceOrder.setUpdatedAt(date);
         serviceOrder.setPriceTotal(new BigDecimal(0));
         serviceOrder.setStatusType(serviceOrderStatusTypeRepository.findOne(1));
 
         serviceOrderRepository.save(serviceOrder);
+
+        serviceRequest.setStatusType(serviceRequestStatusTypeRepository.findOne(SERVICE_REQUEST_IN_PROGRESS_ID));
+
+        serviceRequestRepository.save(serviceRequest);
 
         return "redirect:/service-requests/" + serviceRequest.getId();
     }

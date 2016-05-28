@@ -10,6 +10,6 @@ import java.util.List;
  */
 public interface CustomerRepository extends CrudRepository<Customer, Integer>{
 
-    public List<Customer> findByNameLike(String name);
+    public List<Customer> findByNameContainingIgnoreCase(String name);
 
 }

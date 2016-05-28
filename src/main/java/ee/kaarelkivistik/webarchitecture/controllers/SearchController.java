@@ -1,8 +1,12 @@
 package ee.kaarelkivistik.webarchitecture.controllers;
 
 import ee.kaarelkivistik.webarchitecture.models.Customer;
+import ee.kaarelkivistik.webarchitecture.models.Device;
 import ee.kaarelkivistik.webarchitecture.repository.CustomerRepository;
+import ee.kaarelkivistik.webarchitecture.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +22,13 @@ import java.util.List;
 @RequestMapping("/search")
 public class SearchController {
 
+    public static final int PAGE_SIZE = 20;
+
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    DeviceRepository deviceRepository;
 
     @RequestMapping("customer")
     public String showCustomerSearchForm(Model model) {
@@ -33,11 +42,37 @@ public class SearchController {
         List<Customer> results = null;
 
         if(customer.getName().length() > 0)
-            results = customerRepository.findByNameLike("%" + customer.getName() + "%");
+            results = customerRepository.findByNameContainingIgnoreCase(customer.getName());
 
         model.addAttribute("results", results);
 
         return "search/customer";
+    }
+
+    @RequestMapping("device")
+    public String showDeviceSearchForm(Model model) {
+        model.addAttribute("device", new Device());
+
+        model.addAttribute("results", deviceRepository.findAll(new PageRequest(0, PAGE_SIZE)));
+
+        return "search/device";
+    }
+
+    @RequestMapping(value = "device", method = RequestMethod.POST)
+    public String showDeviceSearchResults(Model model, Device device) {
+        Page<Device> results = null;
+
+        PageRequest pageRequest = new PageRequest(0, PAGE_SIZE);
+
+        if(device.getName().length() > 0)
+            results = deviceRepository.findByNameContainingIgnoreCase(device.getName(), pageRequest);
+        else {
+            results = deviceRepository.findAll(pageRequest);
+        }
+
+        model.addAttribute("results", results);
+
+        return "search/device";
     }
 
 }

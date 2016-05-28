@@ -20,8 +20,8 @@
                         <th>Number</th>
                         <th>Klient</th>
                         <th>Töötaja</th>
-                        <th>Staatus</th>
-                        <th>Kuupäev</th>
+                        <th>Päring</th>
+                        <th>Tellimus</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -32,7 +32,7 @@
                             <td th:text="${serviceRequest.customer.name}"></td>
                             <td th:text="${serviceRequest.createdBy.name}"></td>
                             <td th:text="${serviceRequest.statusType.name}"></td>
-                            <td th:text="${serviceRequest.createdAt}"></td>
+                            <td th:text="${serviceRequest.serviceOrder == null ? '-' : serviceRequest.serviceOrder.statusType.name}"></td>
                             <td class="text-xs-right">
                                  <a class="btn btn-link" th:href="@{'/service-requests/' + ${serviceRequest.id}}">Ava</a>
                             </td>

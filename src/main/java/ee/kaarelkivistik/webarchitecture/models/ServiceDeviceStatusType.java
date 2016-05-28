@@ -12,6 +12,7 @@ import javax.persistence.Id;
 public class ServiceDeviceStatusType {
 
     @Id
+    @Column(name = "service_device_status_type_id")
     private Integer id;
 
     @Column(name = "type_name")

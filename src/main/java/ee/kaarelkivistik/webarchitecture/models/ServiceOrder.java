@@ -3,7 +3,9 @@ package ee.kaarelkivistik.webarchitecture.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by kaarel on 23.05.16.
@@ -42,10 +44,15 @@ public class ServiceOrder {
     @OneToOne
     private Employee statusChangedBy;
 
-    @NotNull
+    @OneToOne
+    private Employee updatedBy;
+
     private BigDecimal priceTotal;
 
     private String note;
+
+    @OneToMany(mappedBy = "serviceOrder")
+    List<ServiceDevice> serviceDevices = new ArrayList<>();
 
     public ServiceOrder() {}
 
@@ -127,5 +134,21 @@ public class ServiceOrder {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public List<ServiceDevice> getServiceDevices() {
+        return serviceDevices;
+    }
+
+    public void setServiceDevices(List<ServiceDevice> serviceDevices) {
+        this.serviceDevices = serviceDevices;
+    }
+
+    public Employee getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(Employee updatedBy) {
+        this.updatedBy = updatedBy;
     }
 }

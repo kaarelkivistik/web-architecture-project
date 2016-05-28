@@ -22,8 +22,8 @@ public class MyPageConfiguration {
     public MyPageConfiguration() {
         pages = new ArrayList<>();
 
-        pages.add(new Page("/service-requests", "Remonditellimused"));
-        pages.add(new Page("/service-requests/new", "Remonditellimuse koostamine"));
+        pages.add(new Page("/service-requests", "Remondipäringud"));
+        pages.add(new Page("/service-requests/new", "Remondipäringu koostamine"));
         pages.add(new Page("/logout", "Logi välja"));
         // pages.add(new Page("/test", "Testimine"));
     }

@@ -13,6 +13,8 @@
         <div th:replace="fragments :: #header"/>
 
         <div class="content">
+            <h3>Päring</h3>
+
             <form method="POST" th:object="${serviceRequest}" name="serviceRequest">
                 <input type="hidden" th:field="*{id}"/>
 
@@ -42,7 +44,7 @@
 
                     <div class="col-sm-8">
                         <select class="form-control" th:field="*{statusType}">
-                            <option th:each="type : ${statusTypes}" th:value="${type.id}" th:text="${type.name}"/>
+                            <option th:each="type : ${requestStatusTypes}" th:value="${type.id}" th:text="${type.name}"/>
                         </select>
                     </div>
                 </fieldset>
@@ -75,7 +77,7 @@
             <form th:action="@{'/service-requests/' + ${id} + '/delete'}" method="post" name="deleteServiceRequest"/>
             <form th:action="@{'/service-requests/' + ${id} + '/create-service-order'}" method="post" name="createServiceOrder"/>
 
-            <div class="form-group">
+            <div class="form-group text-md-right">
                 <button class="btn btn-primary"
                         onclick="document.forms.serviceRequest.submit()">Salvesta</button>
                 <button class="btn btn-danger"
@@ -83,33 +85,119 @@
             </div>
 
             <div class="jumbotron" th:if="${creating == false} and ${serviceOrder == null}">
-                <h3>Remondikäsku ei eksisteeri</h3>
+                <h3>Remonditellimust pole veel loodud</h3>
                 <button class="btn btn-primary"
-                        onclick="document.forms.createServiceOrder.submit()" th:if="${id}">Loo remondikäsk</button>
+                        onclick="document.forms.createServiceOrder.submit()" th:if="${id}">Loo remonditellimus</button>
             </div>
 
             <div th:if="${serviceOrder}">
-                <hr/>
+                <h3>Tellimus</h3>
 
-                service-order
+                <form method="POST" th:action="@{'/service-orders/' + ${serviceOrder.id}}" th:object="${serviceOrder}" name="serviceOrder">
+                    <input type="hidden" th:field="*{id}"/>
+
+                    <fieldset class="form-group">
+                        <label for="" class="control-label col-sm-4">Staatus</label>
+
+                        <div class="col-sm-8">
+                            <select class="form-control" th:field="*{statusType}">
+                                <option th:each="type : ${orderStatusTypes}" th:value="${type.id}" th:text="${type.name}"/>
+                            </select>
+                        </div>
+                    </fieldset>
+                </form>
+
+                <div class="card"
+                     th:each="serviceDevice : ${serviceOrder.serviceDevices}">
+                    <div class="card-block">
+                        <h4 class="card-title" th:text="${serviceDevice.device.name}"/>
+
+                        <fieldset class="form-group">
+                            <label for="" class="control-label col-sm-4">Reg. number</label>
+
+                            <div class="col-sm-8">
+                                <p class="form-control-static"><b th:text="${serviceDevice.device.regNumber}"/></p>
+                            </div>
+                        </fieldset>
+
+                        <form method="POST"
+                              th:action="@{'/service-devices/' + ${serviceDevice.id}}"
+                              th:object="${serviceDevice}" th:name="${'serviceDevice' + serviceDevice.id}">
+                            <input type="hidden" name="id" th:value="${serviceDevice.id}"/>
+                            <input type="hidden" name="device" th:value="${serviceDevice.device.id}"/>
+                            <input type="hidden" th:field="*{serviceOrder}"/>
+
+                            <fieldset class="form-group">
+                                <label for="" class="control-label col-sm-4">Staatus</label>
+
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="statusType" th:value="${serviceDevice.statusType.id}">
+                                        <option th:each="statusType : ${serviceDeviceStatusTypes}"
+                                                th:value="${statusType.id}" th:text="${statusType.name}"/>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </form>
+
+                        <form method="POST"
+                              th:action="@{'/service-devices/' + ${serviceDevice.id} + '/delete'}"
+                              th:name="${'deleteServiceDevice' + serviceDevice.id}"/>
+
+                        <button class="btn btn-primary"
+                                th:onclick="${'document.forms.serviceDevice' + serviceDevice.id + '.submit()'}">Salvesta</button>
+                        <button class="btn btn-danger"
+                                th:onclick="${'document.forms.deleteServiceDevice' + serviceDevice.id + '.submit()'}">Eemalda</button>
+                    </div>
+
+                    <div class="card-footer" th:text="${serviceDevice.statusType.name}"/>
+                </div>
+
+                <form method="POST"
+                      th:action="@{'/service-orders/' + ${serviceOrder.id} + '/add-device'}"
+                      th:object="${serviceDevice}" name="createServiceDevice">
+                    <input type="hidden" th:field="*{id}"/>
+                    <input type="hidden" th:field="*{serviceOrder}"/>
+                    <input type="hidden" th:field="*{device}"/>
+                </form>
+
+                <div class="form-group text-md-right">
+                    <button class="btn btn-secondary"
+                            onclick="openDeviceSearch()">Lisa seade</button>
+                    <button class="btn btn-primary"
+                            onclick="document.forms.serviceOrder.submit()">Salvesta</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let searchWindow;
+        let customerSearchWindow;
 
         function openCustomerSearch(event) {
             event.preventDefault();
 
-            searchWindow = open("http://localhost:8080/search/customer");
+            customerSearchWindow = open("http://localhost:8080/search/customer");
         }
 
         function customerSearchResultChosen(id, name) {
-            searchWindow.close();
+            customerSearchWindow.close();
 
             document.forms.serviceRequest.querySelector("#customer").value = id;
             document.forms.serviceRequest.querySelector("#customerName").value = name;
+        }
+
+        let deviceSearchWindow;
+
+        function openDeviceSearch(event) {
+            deviceSearchWindow = open("http://localhost:8080/search/device");
+        }
+
+        function deviceSearchResultChosen(id) {
+            deviceSearchWindow.close();
+
+            document.forms.createServiceDevice.querySelector("#device").value = id;
+
+            document.forms.createServiceDevice.submit();
         }
     </script>
 

@@ -1,3 +1,13 @@
+INSERT INTO employee (name) VALUES ('kaarel');
+
+INSERT INTO customer (name) VALUES ('mart');
+INSERT INTO customer (name) VALUES ('oliver');
+INSERT INTO customer (name) VALUES ('rico');
+INSERT INTO customer (name) VALUES ('siim');
+INSERT INTO customer (name) VALUES ('mäe');
+
+/* --- */
+
 INSERT INTO device_type (device_type_id, type_name, level) VALUES (1, 'laserseadmed', 1);
 INSERT INTO device_type (device_type_id, type_name, level) VALUES (2, 'raadiotehnika', 1);
 INSERT INTO device_type (device_type_id, type_name, level) VALUES (3, 'arvutid', 1);
@@ -22,4 +32,23 @@ INSERT INTO device_type (device_type_id, type_name, level, super_type_id) VALUES
 
 INSERT INTO device (device_type_id, name, reg_no, model, manufacturer) VALUES (5, 'Insener Garini hyperboloid', 'G327347273', 'GAR1444', 'Garin Industries');
 INSERT INTO device (device_type_id, name, reg_no, model, manufacturer) VALUES (6, 'Laserkahur', 'LK327347273', 'KL-11', 'Laser Weapons Ltd.');
-	
+
+/* --- */
+
+INSERT INTO service_request_status_type (service_request_status_type_id, type_name) VALUES (1, 'Registreeritud');
+INSERT INTO service_request_status_type (service_request_status_type_id, type_name) VALUES (2, 'Tagasi lükatud');
+INSERT INTO service_request_status_type (service_request_status_type_id, type_name) VALUES (3, 'Tellimus tehtud');
+
+/* --- */
+
+INSERT INTO so_status_type (so_status_type_id, type_name) VALUES (1, 'Töö vastu võetud');
+INSERT INTO so_status_type (so_status_type_id, type_name) VALUES (2, 'Valmis');
+INSERT INTO so_status_type (so_status_type_id, type_name) VALUES (3, 'Hinnastatud');
+INSERT INTO so_status_type (so_status_type_id, type_name) VALUES (4, 'Arve tehtud');
+INSERT INTO so_status_type (so_status_type_id, type_name) VALUES (5, 'Seade tagastatud');
+
+/* --- */
+
+INSERT INTO service_device_status_type (service_device_status_type_id, type_name) VALUES (1, 'Vastu võetud');
+INSERT INTO service_device_status_type (service_device_status_type_id, type_name) VALUES (2, 'Töö seadmega lõpetatud');
+INSERT INTO service_device_status_type (service_device_status_type_id, type_name) VALUES (3, 'Seade kliendile tagastatud');

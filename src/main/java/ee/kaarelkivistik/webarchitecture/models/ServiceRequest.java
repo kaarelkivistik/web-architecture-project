@@ -42,8 +42,8 @@ public class ServiceRequest {
     @NotEmpty
     private String descriptionByEmployee;
 
-    public ServiceRequest() {
-    }
+    @OneToOne(mappedBy = "serviceRequest")
+    private ServiceOrder serviceOrder;
 
     public Integer getId() {
         return id;
@@ -99,6 +99,14 @@ public class ServiceRequest {
 
     public void setDescriptionByEmployee(String descriptionByEmployee) {
         this.descriptionByEmployee = descriptionByEmployee;
+    }
+
+    public ServiceOrder getServiceOrder() {
+        return serviceOrder;
+    }
+
+    public void setServiceOrder(ServiceOrder serviceOrder) {
+        this.serviceOrder = serviceOrder;
     }
 
     @Override
