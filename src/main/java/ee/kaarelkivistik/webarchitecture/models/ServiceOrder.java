@@ -53,11 +53,16 @@ public class ServiceOrder {
     private String note;
 
     @OneToMany(mappedBy = "serviceOrder")
+    @Valid
     List<ServiceDevice> serviceDevices = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "serviceOrder")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceOrder")
     @Valid
     List<ServicePart> serviceParts = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceOrder")
+    @Valid
+    List<ServiceAction> serviceActions = new ArrayList<>();
 
     public ServiceOrder() {}
 
@@ -163,5 +168,13 @@ public class ServiceOrder {
 
     public void setServiceParts(List<ServicePart> serviceParts) {
         this.serviceParts = serviceParts;
+    }
+
+    public List<ServiceAction> getServiceActions() {
+        return serviceActions;
+    }
+
+    public void setServiceActions(List<ServiceAction> serviceActions) {
+        this.serviceActions = serviceActions;
     }
 }

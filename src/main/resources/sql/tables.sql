@@ -14,8 +14,8 @@ DROP TABLE IF EXISTS service_request_status_type;
 DROP TABLE IF EXISTS service_device_status_type;
 DROP TABLE IF EXISTS so_status_type;
 DROP TABLE IF EXISTS service_action_status_type;
-DROP TABLE IF EXISTS service_type;
 DROP TABLE IF EXISTS service_unit_type;
+DROP TABLE IF EXISTS service_type;
 
 /* klassifikaatorid */
 
@@ -52,18 +52,19 @@ CREATE TABLE service_action_status_type
   CONSTRAINT service_action_status_type_pk PRIMARY KEY (service_action_status_type_id)
 );
 
-CREATE TABLE service_type 
-( service_type_id int NOT NULL,
-  service_unit_type_fk int,
-  type_name varchar(200),
-  service_price numeric,
-  CONSTRAINT service_type_pk PRIMARY KEY (service_type_id)
-);
-
 CREATE TABLE service_unit_type 
 ( service_unit_type_id int NOT NULL ,
   type_name varchar(200),
   CONSTRAINT service_unit_pk PRIMARY KEY (service_unit_type_id)
+);
+
+CREATE TABLE service_type 
+( service_type_id int NOT NULL,
+  service_unit_type_id int,
+  type_name varchar(200),
+  service_price numeric,
+  CONSTRAINT service_type_pk PRIMARY KEY (service_type_id),
+  CONSTRAINT service_unit_type_fk FOREIGN KEY (service_unit_type_id) REFERENCES service_unit_type
 );
 
 /* põhiolemid */
@@ -172,7 +173,7 @@ CREATE TABLE service_action
   service_device_id int,
   service_order_id int NOT NULL,
   service_amount numeric NOT NULL,
-  price numeric NOT NULL,
+  price numeric,
   action_description text,
   created timestamp NOT NULL,
   created_by int NOT NULL,

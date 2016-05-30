@@ -9,141 +9,203 @@
 </head>
 <body>
 
-    <div class="container">
-        <div th:replace="fragments :: #header"/>
+<div class="container">
+    <div th:replace="fragments :: #header"/>
 
-        <div class="content">
-                <h3>Tellimus</h3>
+    <div class="content">
+        <h3>Tellimus</h3>
 
-                <form method="POST" th:action="@{'/service-orders/' + ${serviceOrder.id}}" th:object="${serviceOrder}" name="serviceOrder">
+        <form method="POST" th:action="@{'/service-orders/' + ${serviceOrder.id}}" th:object="${serviceOrder}" name="serviceOrder">
 
-                <input type="hidden" th:field="*{id}"/>
-                <input type="hidden" th:field="*{serviceRequest}"/>
-                <input type="hidden" th:field="*{statusType}"/>
+            <input type="hidden" th:field="*{id}"/>
+            <input type="hidden" th:field="*{serviceRequest}"/>
+            <input type="hidden" th:field="*{statusType}"/>
 
-                <fieldset class="form-group">
-                    <label class="control-label col-sm-4">Staatus</label>
+            <fieldset class="form-group">
+                <label class="control-label col-sm-4">Staatus</label>
 
-                    <div class="col-sm-8">
-                        <select class="form-control" th:field="*{statusType}">
-                            <option th:each="type : ${orderStatusTypes}" th:value="${type.id}" th:text="${type.name}"/>
-                        </select>
-                    </div>
-                </fieldset>
-
-                <div class="form-group text-md-right">
-                    <button class="btn btn-primary">Salvesta</button>
+                <div class="col-sm-8">
+                    <select class="form-control" th:field="*{statusType}">
+                        <option th:each="type : ${orderStatusTypes}" th:value="${type.id}" th:text="${type.name}"/>
+                    </select>
                 </div>
+            </fieldset>
 
-                <h4>Tellimusega seotud seadmed</h4>
+            <div class="form-group text-md-right">
+                <button class="btn btn-primary">Salvesta</button>
+            </div>
 
-                <div th:each="serviceDevice, iterator : ${serviceDevices}" th:include="fragments/device-card :: card"></div>
+            <h4>Seadmed</h4>
 
-                <div class="form-group text-md-right">
-                    <button class="btn btn-secondary"
-                            onclick="openDeviceSearch(event)">Lisa seade</button>
+            <div th:each="serviceDevice, iterator : ${serviceDevices}" th:include="fragments/device-card :: card"></div>
+
+            <div class="form-group text-md-right">
+                <button class="btn btn-secondary"
+                        onclick="openDeviceSearch(event)">Lisa seade</button>
+            </div>
+
+            <h4>Varuosad</h4>
+
+            <div th:each="servicePart, iterator : ${serviceParts}" th:include="fragments/service-part-card :: card"/>
+
+            <fieldset class="form-group text-xs-right">
+                <button class="btn btn-primary">Salvesta</button>
+            </fieldset>
+
+            <h4>Töö</h4>
+
+            <div th:each="serviceAction, iterator : ${serviceActions}" th:include="fragments/service-action-card :: card"/>
+
+            <fieldset class="form-group text-xs-right">
+                <button class="btn btn-primary">Salvesta</button>
+            </fieldset>
+
+        </form>
+
+        <h4>Varuosa lisamine tellimusele</h4>
+
+        <form method="POST"
+              th:action="@{'/service-orders/' + ${serviceOrder.id} + '/add-part'}"
+              th:object="${newServicePart}" name="addServicePart">
+
+            <fieldset class="form-group">
+                <label class="control-label col-sm-4">Seade</label>
+
+                <div class="col-sm-8">
+                    <select class="form-control" th:field="*{serviceDevice}">
+                        <option value="">Puudub</option>
+
+                        <option th:each="serviceDevice : ${serviceOrder.serviceDevices}"
+                                th:value="${serviceDevice.id}" th:text="${serviceDevice.device.name}"/>
+                    </select>
                 </div>
+            </fieldset>
 
-                <h4>Varuosad</h4>
+            <fieldset class="form-group"
+                      th:classappend="${#fields.hasErrors('partName')}? has-danger">
+                <label class="control-label col-sm-4">Nimetus</label>
 
-                <div th:each="servicePart, iterator : ${serviceParts}" th:include="fragments/service-part-card :: card"/>
-
-                <fieldset class="form-group text-xs-right">
-                    <button class="btn btn-primary">Salvesta</button>
-                </fieldset>
-
-                </form>
-
-                <h4>Varuosa lisamine tellimusele</h4>
-
-                <form method="POST"
-                      th:action="@{'/service-orders/' + ${serviceOrder.id} + '/add-part'}"
-                      th:object="${newServicePart}" name="addServicePart">
-
-                <fieldset class="form-group">
-                    <label class="control-label col-sm-4">Seade</label>
-
-                    <div class="col-sm-8">
-                        <select class="form-control" th:field="*{serviceDevice}">
-                            <option value="">Puudub</option>
-
-                            <option th:each="serviceDevice : ${serviceOrder.serviceDevices}"
-                                    th:value="${serviceDevice.id}" th:text="${serviceDevice.device.name}"/>
-                        </select>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form-group"
-                          th:classappend="${#fields.hasErrors('partName')}? has-danger">
-                    <label class="control-label col-sm-4">Nimetus</label>
-
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" th:field="*{partName}"/>
-
-                        <div th:errors="${newServicePart.partName}"/>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form-group"
-                          th:classappend="${#fields.hasErrors('partPrice')}? has-danger">
-                    <label class="control-label col-sm-4">Tüki hind</label>
-
-                    <div class="col-sm-8">
-                        <input type="number" class="form-control" th:field="*{partPrice}"/>
-
-                        <div th:errors="${newServicePart.partPrice}"/>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form-group"
-                          th:classappend="${#fields.hasErrors('partCount')}? has-danger">
-                    <label class="control-label col-sm-4">Kogus</label>
-
-                    <div class="col-sm-8">
-                        <input type="number" class="form-control" th:field="*{partCount}"/>
-
-                        <div th:errors="${newServicePart.partCount}"/>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form-group">
-                    <label class="control-label col-sm-4">Seerianumber</label>
-
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" th:field="*{serialNumber}"/>
-                    </div>
-                </fieldset>
-                <div class="form-group text-md-right">
-                    <button class="btn btn-primary">Lisa</button>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{partName}"/>
+                    <div th:errors="${newServicePart.partName}"/>
                 </div>
-                </form>
+            </fieldset>
 
-                <form th:action="@{'/service-orders/' + ${serviceOrder.id} + '/add-device'}"
-                      th:object="${newServiceDevice}" method="POST" name="createServiceDevice">
-                    <input type="hidden" th:field="*{device}"/>
-                </form>
-        </div>
+            <fieldset class="form-group"
+                      th:classappend="${#fields.hasErrors('partPrice')}? has-danger">
+                <label class="control-label col-sm-4">Tüki hind</label>
+
+                <div class="col-sm-8">
+                    <input type="number" class="form-control" th:field="*{partPrice}"/>
+                    <div th:errors="${newServicePart.partPrice}"/>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group"
+                      th:classappend="${#fields.hasErrors('partCount')}? has-danger">
+                <label class="control-label col-sm-4">Kogus</label>
+
+                <div class="col-sm-8">
+                    <input type="number" class="form-control" th:field="*{partCount}"/>
+                    <div th:errors="${newServicePart.partCount}"/>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+                <label class="control-label col-sm-4">Seerianumber</label>
+
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{serialNumber}"/>
+                </div>
+            </fieldset>
+
+            <div class="form-group text-md-right">
+                <button class="btn btn-primary">Lisa</button>
+            </div>
+        </form>
+
+        <h4>Töö lisamine tellimusele</h4>
+
+        <form method="POST"
+              th:action="@{'/service-orders/' + ${serviceOrder.id} + '/add-action'}"
+              th:object="${newServiceAction}" name="addServiceAction">
+
+            <fieldset class="form-group"
+                      th:classappend="${#fields.hasErrors('serviceDevice')}? has-danger">
+                <label class="control-label col-sm-4">Seade</label>
+
+                <div class="col-sm-8">
+                    <select class="form-control" th:field="*{serviceDevice}">
+                        <option value="">Puudub</option>
+
+                        <option th:each="serviceDevice : ${serviceOrder.serviceDevices}"
+                                th:value="${serviceDevice.id}" th:text="${serviceDevice.device.name}"/>
+                    </select>
+                    <div th:errors="${newServiceAction.serviceDevice}"/>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group"
+                      th:classappend="${#fields.hasErrors('serviceType')}? has-danger">
+                <label class="control-label col-sm-4">Töö tüüp</label>
+
+                <div class="col-sm-8">
+                    <select class="form-control" th:field="*{serviceType}">
+                        <option th:each="serviceType : ${serviceTypes}"
+                                th:value="${serviceType.id}" th:text="${serviceType.name + ' €' + serviceType.servicePrice}"/>
+                    </select>
+                    <div th:errors="${newServiceAction.serviceType}"/>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group"
+                      th:classappend="${#fields.hasErrors('serviceAmount')}? has-danger">
+                <label class="control-label col-sm-4">Kogus</label>
+
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{serviceAmount}"/>
+                    <div th:errors="${newServiceAction.serviceAmount}"/>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group"
+                      th:classappend="${#fields.hasErrors('actionDescription')}? has-danger">
+                <label class="control-label col-sm-4">Kirjeldus</label>
+
+                <div class="col-sm-8">
+                    <textarea class="form-control" th:field="*{actionDescription}" style="height: 100px"/>
+                    <div th:errors="${newServiceAction.actionDescription}"/>
+                </div>
+            </fieldset>
+
+            <div class="form-group text-md-right">
+                <button class="btn btn-primary">Lisa</button>
+            </div>
+        </form>
+
+        <form th:action="@{'/service-orders/' + ${serviceOrder.id} + '/add-device'}"
+              th:object="${newServiceDevice}" method="POST" name="createServiceDevice">
+            <input type="hidden" th:field="*{device}"/>
+        </form>
     </div>
+</div>
 
-    <script>
-        let deviceSearchWindow;
+<script>
+    let deviceSearchWindow;
 
-        function openDeviceSearch(event) {
-            event.preventDefault();
+    function openDeviceSearch(event) {
+        event.preventDefault();
 
-            deviceSearchWindow = open("http://localhost:8080/search/device");
-        }
+        deviceSearchWindow = open("http://localhost:8080/search/device");
+    }
 
-        function deviceSearchResultChosen(id) {
-            console.log(deviceSearchWindow);
+    function deviceSearchResultChosen(id) {
+        deviceSearchWindow.close();
 
-            deviceSearchWindow.close();
-
-            document.forms.createServiceDevice.querySelector("#device").value = id;
-
-            document.forms.createServiceDevice.submit();
-        }
-    </script>
+        document.forms.createServiceDevice.querySelector("#device").value = id;
+        document.forms.createServiceDevice.submit();
+    }
+</script>
 
 </body>
 </html>

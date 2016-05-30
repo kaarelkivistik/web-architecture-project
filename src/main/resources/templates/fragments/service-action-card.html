@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+    <div th:fragment="card">
+        <input type="hidden" th:field="*{serviceActions[__${iterator.index}__].id}"/>
+
+        <div class="card">
+            <div class="card-block">
+                <h5 class="card-title"/>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceActions[' + iterator.index + '].serviceDevice'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Seade</label>
+
+                    <div class="col-sm-9">
+                        <select class="form-control form-control-sm" th:field="*{serviceActions[__${iterator.index}__].serviceDevice}">
+                            <option value="">Puudub</option>
+
+                            <option th:each="serviceDevice : ${serviceOrder.serviceDevices}"
+                                    th:value="${serviceDevice.id}" th:text="${serviceDevice.device.name}"/>
+                        </select>
+                        <div th:errors="${serviceOrder.serviceActions[__${iterator.index}__].serviceDevice}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceActions[' + iterator.index + '].serviceDevice'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Töö tüüp</label>
+
+                    <div class="col-sm-9">
+                        <select class="form-control" th:field="*{serviceActions[__${iterator.index}__].serviceType}">
+                            <option th:each="serviceType : ${serviceTypes}"
+                                    th:value="${serviceType.id}" th:text="${serviceType.name + ' €' + serviceType.servicePrice}"/>
+                        </select>
+                        <div th:errors="${serviceOrder.serviceActions[__${iterator.index}__].serviceType}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceActions[' + iterator.index + '].serviceAmount'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Kogus</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" th:field="*{serviceActions[__${iterator.index}__].serviceAmount}"/>
+                        <div th:errors="${serviceOrder.serviceActions[__${iterator.index}__].serviceAmount}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceActions[' + iterator.index + '].actionDescription'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Kirjeldus</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" th:field="*{serviceActions[__${iterator.index}__].actionDescription}"/>
+                        <div th:errors="${serviceOrder.serviceActions[__${iterator.index}__].actionDescription}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceActions[' + iterator.index + '].price'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Ühiku hind</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm"
+                               th:field="*{serviceActions[__${iterator.index}__].price}"
+                               th:placeholder="${serviceAction.serviceType.servicePrice}"/>
+                        <div th:errors="${serviceOrder.serviceActions[__${iterator.index}__].price}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label class="control-label col-sm-3">Summa kokku</label>
+
+                    <div class="col-sm-9">
+                        <p class="form-control-static">
+                            <b th:text="${'€' + serviceAction.serviceType.servicePrice * serviceAction.serviceAmount}"
+                               th:if="${serviceAction.price == null}"/>
+                            <b th:text="${'€' + serviceAction.price * serviceAction.serviceAmount}"
+                               th:unless="${serviceAction.price == null}"/></p>
+                    </div>
+                </fieldset>
+
+                <button class="btn btn-danger" name="deleteAction" th:value="${serviceAction.id}">Kustuta</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

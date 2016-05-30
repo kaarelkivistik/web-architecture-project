@@ -1,12 +1,17 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * Created by kaarel on 23.05.16.
  */
+
+@Entity
 public class ServiceAction {
 
     @Id
@@ -31,7 +36,8 @@ public class ServiceAction {
     @JoinColumn(name = "service_order_id")
     private ServiceOrder serviceOrder;
 
-    private Double serviceAmount;
+    @NotNull
+    private Double serviceAmount = Double.valueOf(1);
 
     private BigDecimal price;
 

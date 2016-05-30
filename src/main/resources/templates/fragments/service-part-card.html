@@ -23,7 +23,7 @@
                             <option th:each="serviceDevice : ${serviceOrder.serviceDevices}"
                                     th:value="${serviceDevice.id}" th:text="${serviceDevice.device.name}"/>
                         </select>
-                        <div th:errors="${serviceOrder.serviceParts[__${iterator.index}__].partName}"></div>
+                        <div th:errors="${serviceOrder.serviceParts[__${iterator.index}__].serviceDevice}"></div>
                     </div>
                 </fieldset>
 
@@ -74,6 +74,8 @@
                         <p class="form-control-static"><b th:text="${'€' + servicePart.partPrice * servicePart.partCount}"/></p>
                     </div>
                 </fieldset>
+
+                <button class="btn btn-danger" name="deletePart" th:value="${servicePart.id}">Kustuta</button>
             </div>
         </div>
     </div>

@@ -52,3 +52,20 @@ INSERT INTO so_status_type (so_status_type_id, type_name) VALUES (5, 'Seade taga
 INSERT INTO service_device_status_type (service_device_status_type_id, type_name) VALUES (1, 'Vastu võetud');
 INSERT INTO service_device_status_type (service_device_status_type_id, type_name) VALUES (2, 'Töö seadmega lõpetatud');
 INSERT INTO service_device_status_type (service_device_status_type_id, type_name) VALUES (3, 'Seade kliendile tagastatud');
+
+/* --- */
+
+INSERT INTO service_action_status_type (service_action_status_type_id, type_name) VALUES (1, 'Pooleli');
+INSERT INTO service_action_status_type (service_action_status_type_id, type_name) VALUES (2, 'Valmis');
+
+/* --- */
+
+INSERT INTO service_unit_type (service_unit_type_id, type_name) VALUES (1, 'tundi');
+INSERT INTO service_unit_type (service_unit_type_id, type_name) VALUES (2, 'minutit');
+INSERT INTO service_unit_type (service_unit_type_id, type_name) VALUES (3, 'töö-operatsioon');
+
+/* --- */
+
+INSERT INTO service_type (service_type_id, type_name, service_unit_type_id, service_price) VALUES (1, 'Raske remonditoo', 1, 100);
+INSERT INTO service_type (service_type_id, type_name, service_unit_type_id, service_price) VALUES (2, 'Hooldus', 1, 10);
+INSERT INTO service_type (service_type_id, type_name, service_unit_type_id, service_price) VALUES (3, 'Laserkahuri aku vahetus', 3, 1000);

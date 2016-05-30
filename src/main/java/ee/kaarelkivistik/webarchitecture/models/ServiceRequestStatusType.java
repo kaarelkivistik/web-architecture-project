@@ -18,13 +18,6 @@ public class ServiceRequestStatusType {
     @Column(name = "type_name")
     private String name;
 
-    public ServiceRequestStatusType() {}
-
-    public ServiceRequestStatusType(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -39,14 +32,6 @@ public class ServiceRequestStatusType {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "ServiceRequestStatusType{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
     }
 
 }
