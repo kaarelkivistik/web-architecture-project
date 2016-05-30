@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS service_action;
+DROP TABLE IF EXISTS service_part;
 DROP TABLE IF EXISTS service_device;
 DROP TABLE IF EXISTS service_order;
 DROP TABLE IF EXISTS service_request;
@@ -11,16 +13,9 @@ DROP TABLE IF EXISTS device_type;
 DROP TABLE IF EXISTS service_request_status_type;
 DROP TABLE IF EXISTS service_device_status_type;
 DROP TABLE IF EXISTS so_status_type;
-
-/*DROP TABLE IF EXISTS service_note;
-DROP TABLE IF EXISTS service_action;
-DROP TABLE IF EXISTS service_part;
 DROP TABLE IF EXISTS service_action_status_type;
 DROP TABLE IF EXISTS service_type;
 DROP TABLE IF EXISTS service_unit_type;
-DROP TABLE IF EXISTS invoice;
-DROP TABLE IF EXISTS invoice_status_type;
-DROP TABLE IF EXISTS invoice_row;*/
 
 /* klassifikaatorid */
 
@@ -49,6 +44,26 @@ CREATE TABLE so_status_type
 ( so_status_type_id int NOT NULL ,
   type_name varchar(200),
   CONSTRAINT so_status_type_pk PRIMARY KEY (so_status_type_id)
+);
+
+CREATE TABLE service_action_status_type 
+( service_action_status_type_id int NOT NULL ,
+  type_name varchar(200),
+  CONSTRAINT service_action_status_type_pk PRIMARY KEY (service_action_status_type_id)
+);
+
+CREATE TABLE service_type 
+( service_type_id int NOT NULL,
+  service_unit_type_fk int,
+  type_name varchar(200),
+  service_price numeric,
+  CONSTRAINT service_type_pk PRIMARY KEY (service_type_id)
+);
+
+CREATE TABLE service_unit_type 
+( service_unit_type_id int NOT NULL ,
+  type_name varchar(200),
+  CONSTRAINT service_unit_pk PRIMARY KEY (service_unit_type_id)
 );
 
 /* põhiolemid */
@@ -124,7 +139,7 @@ CREATE TABLE service_order
   note text,
   CONSTRAINT service_order_pk PRIMARY KEY (service_order_id),
   CONSTRAINT so_status_type_fk FOREIGN KEY (so_status_type_id) REFERENCES so_status_type,
-  CONSTRAINT service_request_fk FOREIGN KEY (service_request_id) REFERENCES service_request,
+  CONSTRAINT service_request_fk FOREIGN KEY (service_request_id) REFERENCES service_request ON DELETE CASCADE,
   CONSTRAINT created_by_employee_fk FOREIGN KEY (created_by) REFERENCES employee (employee_id),
   CONSTRAINT updated_by_employee_fk FOREIGN KEY (updated_by) REFERENCES employee (employee_id),
   CONSTRAINT status_changed_by_employee_fk FOREIGN KEY (status_changed_by) REFERENCES employee (employee_id)
@@ -145,4 +160,45 @@ CREATE TABLE service_device
   CONSTRAINT device_id FOREIGN KEY (device_id) REFERENCES device,
   CONSTRAINT service_device_status_type_fk FOREIGN KEY (service_device_status_type_id) REFERENCES service_device_status_type,
   CONSTRAINT service_order_fk FOREIGN KEY (service_order_id) REFERENCES service_order
+);
+
+DROP SEQUENCE IF EXISTS service_action_id;
+CREATE SEQUENCE service_action_id;
+
+CREATE TABLE service_action 
+( service_action_id int NOT NULL DEFAULT nextval('service_action_id'),
+  service_action_status_type_id int NOT NULL,
+  service_type_id int NOT NULL,
+  service_device_id int,
+  service_order_id int NOT NULL,
+  service_amount numeric NOT NULL,
+  price numeric NOT NULL,
+  action_description text,
+  created timestamp NOT NULL,
+  created_by int NOT NULL,
+  CONSTRAINT service_action_pk PRIMARY KEY (service_action_id),
+  CONSTRAINT service_action_status_type_fk FOREIGN KEY (service_action_status_type_id) REFERENCES service_action_status_type,
+  CONSTRAINT service_type_fk FOREIGN KEY (service_type_id) REFERENCES service_type,
+  CONSTRAINT service_device_fk FOREIGN KEY (service_device_id) REFERENCES service_device ON DELETE CASCADE,
+  CONSTRAINT service_order_fk FOREIGN KEY (service_order_id) REFERENCES service_order,
+  CONSTRAINT created_by_employee_fk FOREIGN KEY (created_by) REFERENCES employee (employee_id)
+);
+
+DROP SEQUENCE IF EXISTS service_part_id;
+CREATE SEQUENCE service_part_id;
+
+CREATE TABLE service_part
+( service_part_id int NOT NULL DEFAULT nextval('service_part_id'),
+  service_order_id int NOT NULL,
+  service_device_id int,
+  part_name text NOT NULL,
+  serial_no text,
+  part_count int NOT NULL,
+  part_price numeric NOT NULL,
+  created timestamp NOT NULL,
+  created_by int NOT NULL,
+  CONSTRAINT service_part_pk PRIMARY KEY (service_part_id),
+  CONSTRAINT service_order_fk FOREIGN KEY (service_order_id) REFERENCES service_order,
+  CONSTRAINT service_device_fk FOREIGN KEY (service_device_id) REFERENCES service_device ON DELETE CASCADE,
+  CONSTRAINT created_by_employee_fk FOREIGN KEY (created_by) REFERENCES employee (employee_id)
 );

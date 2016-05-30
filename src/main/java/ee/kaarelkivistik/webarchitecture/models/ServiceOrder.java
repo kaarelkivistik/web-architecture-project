@@ -1,6 +1,7 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -53,6 +54,10 @@ public class ServiceOrder {
 
     @OneToMany(mappedBy = "serviceOrder")
     List<ServiceDevice> serviceDevices = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "serviceOrder")
+    @Valid
+    List<ServicePart> serviceParts = new ArrayList<>();
 
     public ServiceOrder() {}
 
@@ -150,5 +155,13 @@ public class ServiceOrder {
 
     public void setUpdatedBy(Employee updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public List<ServicePart> getServiceParts() {
+        return serviceParts;
+    }
+
+    public void setServiceParts(List<ServicePart> serviceParts) {
+        this.serviceParts = serviceParts;
     }
 }

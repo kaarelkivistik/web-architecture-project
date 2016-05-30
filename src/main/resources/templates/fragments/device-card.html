@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+    <div th:fragment="card">
+        <div class="card">
+            <div class="card-block">
+                <h5 class="card-title" th:text="${serviceDevice.device.name}"/>
+
+                <fieldset class="form-group">
+                    <label for="" class="control-label col-sm-4">Reg. number</label>
+
+                    <div class="col-sm-8">
+                        <p class="form-control-static"><b th:text="${serviceDevice.device.regNumber}"/></p>
+                    </div>
+                </fieldset>
+
+
+                <fieldset class="form-group">
+                    <label for="" class="control-label col-sm-4">Staatus</label>
+
+                    <div class="col-sm-8">
+                        <select class="form-control" name="statusType" th:field="*{serviceDevices[__${iterator.index}__].statusType}">
+                            <option th:each="statusType : ${serviceDeviceStatusTypes}"
+                                    th:value="${statusType.id}" th:text="${statusType.name}"/>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <button class="btn btn-danger" name="delete" th:value="${serviceDevice.id}">Kustuta</button>
+            </div>
+
+            <div class="card-footer" th:text="${serviceDevice.statusType.name}"/>
+        </div>
+    </div>
+</body>
+</html>

@@ -7,10 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
@@ -52,6 +49,21 @@ public class ServiceRequestController {
         binder.setDisallowedFields("createdAt", "createdBy");
     }
 
+    /*@ModelAttribute
+    public Iterable<ServiceRequestStatusType> serviceRequestStatusTypes() {
+        return serviceRequestStatusTypeRepository.findAll();
+    }
+
+    @ModelAttribute
+    public Iterable<ServiceOrderStatusType> serviceOrderStatusTypes() {
+        return serviceOrderStatusTypeRepository.findAll();
+    }
+
+    @ModelAttribute
+    public Iterable<ServiceDeviceStatusType> serviceDeviceStatusTypes() {
+        return serviceDeviceStatusTypeRepository.findAll();
+    }*/
+
     @RequestMapping("/service-requests")
     public String showList(Model model, Principal principal) {
 
@@ -61,12 +73,13 @@ public class ServiceRequestController {
     }
 
     @RequestMapping("/service-requests/new")
-    public String showForm(Model model, Principal principal) {
+    public String showForm(Model model) {
+
+        model.addAttribute("requestStatusTypes", serviceRequestStatusTypeRepository.findAll());
+        model.addAttribute("orderStatusTypes", serviceOrderStatusTypeRepository.findAll());
 
         model.addAttribute("creating", true);
         model.addAttribute("serviceRequest", new ServiceRequest());
-        model.addAttribute("requestStatusTypes", serviceRequestStatusTypeRepository.findAll());
-        model.addAttribute("orderStatusTypes", serviceOrderStatusTypeRepository.findAll());
 
         return SERVICE_REQUEST_FORM_TEMPLATE;
     }
@@ -87,40 +100,53 @@ public class ServiceRequestController {
     }
 
     @RequestMapping("/service-requests/{id}")
-    public String showFormForServiceRequest(@PathVariable Integer id, Model model, Principal principal) {
+    public String showFormForServiceRequest(@PathVariable Integer id, Model model) {
 
         ServiceRequest serviceRequest = serviceRequestRepository.findOne(id);
+        ServiceOrder serviceOrder = serviceRequest.getServiceOrder();
 
         model.addAttribute("creating", false);
         model.addAttribute("serviceRequest", serviceRequest);
-        model.addAttribute("serviceOrder", serviceRequest.getServiceOrder());
+        model.addAttribute("serviceOrder", serviceOrder);
+
         model.addAttribute("requestStatusTypes", serviceRequestStatusTypeRepository.findAll());
         model.addAttribute("orderStatusTypes", serviceOrderStatusTypeRepository.findAll());
         model.addAttribute("serviceDeviceStatusTypes", serviceDeviceStatusTypeRepository.findAll());
 
         ServiceDevice serviceDevice = new ServiceDevice();
-
-        serviceDevice.setServiceOrder(serviceRequest.getServiceOrder());
-
+        serviceDevice.setServiceOrder(serviceOrder);
         model.addAttribute("serviceDevice", serviceDevice);
+
+        ServicePart servicePart = new ServicePart();
+        servicePart.setServiceOrder(serviceOrder);
+        model.addAttribute(servicePart);
 
         return SERVICE_REQUEST_FORM_TEMPLATE;
     }
 
     @RequestMapping(value = "/service-requests/{id}", method = RequestMethod.POST)
-    public String showResultForUpdate(@PathVariable Integer id, Model model, @Valid ServiceRequest serviceRequest, BindingResult bindingResult) {
+    public String showResultForUpdate(@PathVariable Integer id, Model model, @Valid ServiceRequest newServiceRequest, BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors())
+        ServiceRequest serviceRequest = serviceRequestRepository.findOne(id);
+
+        if(bindingResult.hasErrors()) {
+            ServiceOrder serviceOrder = serviceRequest.getServiceOrder();
+
+            model.addAttribute("creating", false);
+            model.addAttribute("serviceOrder", serviceOrder);
+
+            model.addAttribute("requestStatusTypes", serviceRequestStatusTypeRepository.findAll());
+            model.addAttribute("orderStatusTypes", serviceOrderStatusTypeRepository.findAll());
+            model.addAttribute("serviceDeviceStatusTypes", serviceDeviceStatusTypeRepository.findAll());
+
             return SERVICE_REQUEST_FORM_TEMPLATE;
-        else {
-            ServiceRequest currentServiceRequest = serviceRequestRepository.findOne(id);
+        } else {
+            serviceRequest.setCustomer(newServiceRequest.getCustomer());
+            serviceRequest.setStatusType(newServiceRequest.getStatusType());
+            serviceRequest.setDescriptionByCustomer(newServiceRequest.getDescriptionByCustomer());
+            serviceRequest.setDescriptionByEmployee(newServiceRequest.getDescriptionByEmployee());
 
-            currentServiceRequest.setCustomer(serviceRequest.getCustomer());
-            currentServiceRequest.setStatusType(serviceRequest.getStatusType());
-            currentServiceRequest.setDescriptionByCustomer(serviceRequest.getDescriptionByCustomer());
-            currentServiceRequest.setDescriptionByEmployee(serviceRequest.getDescriptionByEmployee());
-
-            serviceRequestRepository.save(currentServiceRequest);
+            serviceRequestRepository.save(serviceRequest);
 
             return "redirect:/service-requests";
         }

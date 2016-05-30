@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+    <div th:fragment="card">
+        <input type="hidden" th:field="*{serviceParts[__${iterator.index}__].id}"/>
+
+        <div class="card">
+            <div class="card-block">
+                <h5 class="card-title" th:text="${servicePart.partName}"/>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceParts[' + iterator.index + '].partName'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Seade</label>
+
+                    <div class="col-sm-9">
+                        <select class="form-control form-control-sm" th:field="*{serviceParts[__${iterator.index}__].serviceDevice}">
+                            <option value="">Puudub</option>
+
+                            <option th:each="serviceDevice : ${serviceOrder.serviceDevices}"
+                                    th:value="${serviceDevice.id}" th:text="${serviceDevice.device.name}"/>
+                        </select>
+                        <div th:errors="${serviceOrder.serviceParts[__${iterator.index}__].partName}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceParts[' + iterator.index + '].partName'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Nimetus</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" th:field="*{serviceParts[__${iterator.index}__].partName}"/>
+                        <div th:errors="${serviceOrder.serviceParts[__${iterator.index}__].partName}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceParts[' + iterator.index + '].serialNumber'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Seerianumber</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" th:field="*{serviceParts[__${iterator.index}__].serialNumber}"/>
+                        <div th:errors="${serviceOrder.serviceParts[__${iterator.index}__].serialNumber}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceParts[' + iterator.index + '].partCount'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Kogus</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" th:field="*{serviceParts[__${iterator.index}__].partCount}"/>
+                        <div th:errors="${serviceOrder.serviceParts[__${iterator.index}__].partCount}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group"
+                          th:classappend="${#fields.hasErrors('__${'serviceParts[' + iterator.index + '].partPrice'}__')}? has-danger">
+                    <label class="control-label col-sm-3">Hind</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control form-control-sm" th:field="*{serviceParts[__${iterator.index}__].partPrice}"/>
+                        <div th:errors="${serviceOrder.serviceParts[__${iterator.index}__].partPrice}"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label class="control-label col-sm-3">Summa kokku</label>
+
+                    <div class="col-sm-9">
+                        <p class="form-control-static"><b th:text="${'€' + servicePart.partPrice * servicePart.partCount}"/></p>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -78,94 +78,20 @@
             <form th:action="@{'/service-requests/' + ${id} + '/create-service-order'}" method="post" name="createServiceOrder"/>
 
             <div class="form-group text-md-right">
+                <a class="btn btn-primary"
+                   th:if="${serviceRequest.serviceOrder != null}"
+                   th:href="@{'/service-orders/' + ${serviceRequest.serviceOrder.id}}">Ava remonditellimus</a>
+
                 <button class="btn btn-primary"
                         onclick="document.forms.serviceRequest.submit()">Salvesta</button>
                 <button class="btn btn-danger"
                         onclick="document.forms.deleteServiceRequest.submit()" th:if="${id}">Kustuta</button>
             </div>
 
-            <div class="jumbotron" th:if="${creating == false} and ${serviceOrder == null}">
+            <div class="jumbotron" th:if="${creating == false} and ${serviceRequest.serviceOrder == null}">
                 <h3>Remonditellimust pole veel loodud</h3>
                 <button class="btn btn-primary"
                         onclick="document.forms.createServiceOrder.submit()" th:if="${id}">Loo remonditellimus</button>
-            </div>
-
-            <div th:if="${serviceOrder}">
-                <h3>Tellimus</h3>
-
-                <form method="POST" th:action="@{'/service-orders/' + ${serviceOrder.id}}" th:object="${serviceOrder}" name="serviceOrder">
-                    <input type="hidden" th:field="*{id}"/>
-
-                    <fieldset class="form-group">
-                        <label for="" class="control-label col-sm-4">Staatus</label>
-
-                        <div class="col-sm-8">
-                            <select class="form-control" th:field="*{statusType}">
-                                <option th:each="type : ${orderStatusTypes}" th:value="${type.id}" th:text="${type.name}"/>
-                            </select>
-                        </div>
-                    </fieldset>
-                </form>
-
-                <div class="card"
-                     th:each="serviceDevice : ${serviceOrder.serviceDevices}">
-                    <div class="card-block">
-                        <h4 class="card-title" th:text="${serviceDevice.device.name}"/>
-
-                        <fieldset class="form-group">
-                            <label for="" class="control-label col-sm-4">Reg. number</label>
-
-                            <div class="col-sm-8">
-                                <p class="form-control-static"><b th:text="${serviceDevice.device.regNumber}"/></p>
-                            </div>
-                        </fieldset>
-
-                        <form method="POST"
-                              th:action="@{'/service-devices/' + ${serviceDevice.id}}"
-                              th:object="${serviceDevice}" th:name="${'serviceDevice' + serviceDevice.id}">
-                            <input type="hidden" name="id" th:value="${serviceDevice.id}"/>
-                            <input type="hidden" name="device" th:value="${serviceDevice.device.id}"/>
-                            <input type="hidden" th:field="*{serviceOrder}"/>
-
-                            <fieldset class="form-group">
-                                <label for="" class="control-label col-sm-4">Staatus</label>
-
-                                <div class="col-sm-8">
-                                    <select class="form-control" name="statusType" th:value="${serviceDevice.statusType.id}">
-                                        <option th:each="statusType : ${serviceDeviceStatusTypes}"
-                                                th:value="${statusType.id}" th:text="${statusType.name}"/>
-                                    </select>
-                                </div>
-                            </fieldset>
-                        </form>
-
-                        <form method="POST"
-                              th:action="@{'/service-devices/' + ${serviceDevice.id} + '/delete'}"
-                              th:name="${'deleteServiceDevice' + serviceDevice.id}"/>
-
-                        <button class="btn btn-primary"
-                                th:onclick="${'document.forms.serviceDevice' + serviceDevice.id + '.submit()'}">Salvesta</button>
-                        <button class="btn btn-danger"
-                                th:onclick="${'document.forms.deleteServiceDevice' + serviceDevice.id + '.submit()'}">Eemalda</button>
-                    </div>
-
-                    <div class="card-footer" th:text="${serviceDevice.statusType.name}"/>
-                </div>
-
-                <form method="POST"
-                      th:action="@{'/service-orders/' + ${serviceOrder.id} + '/add-device'}"
-                      th:object="${serviceDevice}" name="createServiceDevice">
-                    <input type="hidden" th:field="*{id}"/>
-                    <input type="hidden" th:field="*{serviceOrder}"/>
-                    <input type="hidden" th:field="*{device}"/>
-                </form>
-
-                <div class="form-group text-md-right">
-                    <button class="btn btn-secondary"
-                            onclick="openDeviceSearch()">Lisa seade</button>
-                    <button class="btn btn-primary"
-                            onclick="document.forms.serviceOrder.submit()">Salvesta</button>
-                </div>
             </div>
         </div>
     </div>
@@ -184,20 +110,6 @@
 
             document.forms.serviceRequest.querySelector("#customer").value = id;
             document.forms.serviceRequest.querySelector("#customerName").value = name;
-        }
-
-        let deviceSearchWindow;
-
-        function openDeviceSearch(event) {
-            deviceSearchWindow = open("http://localhost:8080/search/device");
-        }
-
-        function deviceSearchResultChosen(id) {
-            deviceSearchWindow.close();
-
-            document.forms.createServiceDevice.querySelector("#device").value = id;
-
-            document.forms.createServiceDevice.submit();
         }
     </script>
 

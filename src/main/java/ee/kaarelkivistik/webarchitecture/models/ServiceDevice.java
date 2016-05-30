@@ -1,5 +1,8 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -22,6 +25,7 @@ public class ServiceDevice {
 
     @OneToOne
     @JoinColumn(name = "device_id")
+    @Fetch(FetchMode.JOIN)
     private Device device;
 
     @OneToOne
