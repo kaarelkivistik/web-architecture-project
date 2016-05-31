@@ -37,7 +37,7 @@ public class ServicePart {
     private String serialNumber;
 
     @NotNull
-    @Min(0)
+    @Min(0) // Ärireegel 4
     private Double partCount = Double.valueOf(1);
 
     @NotNull
@@ -120,5 +120,20 @@ public class ServicePart {
 
     public void setCreatedBy(Employee createdBy) {
         this.createdBy = createdBy;
+    }
+
+    @Override
+    public String toString() {
+        return "ServicePart{" +
+                "id=" + id +
+                ", serviceOrder=" + serviceOrder +
+                ", serviceDevice=" + serviceDevice +
+                ", partName='" + partName + '\'' +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", partCount=" + partCount +
+                ", partPrice=" + partPrice +
+                ", createdAt=" + createdAt +
+                ", createdBy=" + createdBy +
+                '}';
     }
 }

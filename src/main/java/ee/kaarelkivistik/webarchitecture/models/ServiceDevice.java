@@ -25,7 +25,6 @@ public class ServiceDevice {
 
     @OneToOne
     @JoinColumn(name = "device_id")
-    @Fetch(FetchMode.JOIN)
     private Device device;
 
     @OneToOne

@@ -12,22 +12,27 @@
 <div class="container">
     <div th:replace="fragments :: #header"/>
 
+    <!--table clas="table">
+        <tr th:each="var : ${#vars}">
+            <td th:text="${var.key}"></td>
+            <td th:text="${var.value}"></td>
+        </tr>
+    </table-->
+
     <div class="content">
         <h3>Tellimus</h3>
 
         <form method="POST" th:action="@{'/service-orders/' + ${serviceOrder.id}}" th:object="${serviceOrder}" name="serviceOrder">
 
-            <input type="hidden" th:field="*{id}"/>
-            <input type="hidden" th:field="*{serviceRequest}"/>
-            <input type="hidden" th:field="*{statusType}"/>
-
-            <fieldset class="form-group">
+            <fieldset class="form-group"
+                      th:classappend="${#fields.hasErrors('statusType')}? has-danger">
                 <label class="control-label col-sm-4">Staatus</label>
 
                 <div class="col-sm-8">
                     <select class="form-control" th:field="*{statusType}">
                         <option th:each="type : ${orderStatusTypes}" th:value="${type.id}" th:text="${type.name}"/>
                     </select>
+                    <div th:errors="${serviceOrder.statusType}"/>
                 </div>
             </fieldset>
 
@@ -37,7 +42,7 @@
 
             <h4>Seadmed</h4>
 
-            <div th:each="serviceDevice, iterator : ${serviceDevices}" th:include="fragments/device-card :: card"></div>
+            <div th:each="serviceDevice, iterator : ${allServiceDevices}" th:include="fragments/device-card :: card"></div>
 
             <div class="form-group text-md-right">
                 <button class="btn btn-secondary"
@@ -46,7 +51,7 @@
 
             <h4>Varuosad</h4>
 
-            <div th:each="servicePart, iterator : ${serviceParts}" th:include="fragments/service-part-card :: card"/>
+            <div th:each="servicePart, iterator : ${allServiceParts}" th:include="fragments/service-part-card :: card"/>
 
             <fieldset class="form-group text-xs-right">
                 <button class="btn btn-primary">Salvesta</button>
@@ -54,7 +59,7 @@
 
             <h4>Töö</h4>
 
-            <div th:each="serviceAction, iterator : ${serviceActions}" th:include="fragments/service-action-card :: card"/>
+            <div th:each="serviceAction, iterator : ${allServiceActions}" th:include="fragments/service-action-card :: card"/>
 
             <fieldset class="form-group text-xs-right">
                 <button class="btn btn-primary">Salvesta</button>
@@ -75,7 +80,7 @@
                     <select class="form-control" th:field="*{serviceDevice}">
                         <option value="">Puudub</option>
 
-                        <option th:each="serviceDevice : ${serviceOrder.serviceDevices}"
+                        <option th:each="serviceDevice : ${allServiceDevices}"
                                 th:value="${serviceDevice.id}" th:text="${serviceDevice.device.name}"/>
                     </select>
                 </div>
@@ -138,7 +143,7 @@
                     <select class="form-control" th:field="*{serviceDevice}">
                         <option value="">Puudub</option>
 
-                        <option th:each="serviceDevice : ${serviceOrder.serviceDevices}"
+                        <option th:each="serviceDevice : ${allServiceDevices}"
                                 th:value="${serviceDevice.id}" th:text="${serviceDevice.device.name}"/>
                     </select>
                     <div th:errors="${newServiceAction.serviceDevice}"/>

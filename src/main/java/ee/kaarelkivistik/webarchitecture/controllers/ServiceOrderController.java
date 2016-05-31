@@ -2,6 +2,8 @@ package ee.kaarelkivistik.webarchitecture.controllers;
 
 import ee.kaarelkivistik.webarchitecture.models.*;
 import ee.kaarelkivistik.webarchitecture.repository.*;
+import ee.kaarelkivistik.webarchitecture.validators.ServiceOrderValidator;
+import ee.kaarelkivistik.webarchitecture.validators.ServicePartValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,12 +59,17 @@ public class ServiceOrderController {
     @Autowired
     ServiceUnitTypeRepository serviceUnitTypeRepository;
 
-    @InitBinder
-    public void dataBinder(WebDataBinder binder) {
-        binder.setDisallowedFields(
-                "createdAt", "updatedAt", "statusChangedAt",
-                "createdBy", "updatedBy", "statusChangedBy",
-                "priceTotal");
+    private ServiceOrderValidator serviceOrderValidator = new ServiceOrderValidator();
+    private ServicePartValidator servicePartValidator = new ServicePartValidator();
+
+    @InitBinder("serviceOrder")
+    public void serviceOrderDataBinder(WebDataBinder binder) {
+        binder.addValidators(serviceOrderValidator);
+    }
+
+    @InitBinder("newServicePart")
+    public void newServicePartDataBinder(WebDataBinder binder) {
+        binder.addValidators(servicePartValidator);
     }
 
     @RequestMapping(value = "/service-orders/{id}")
@@ -72,15 +79,19 @@ public class ServiceOrderController {
         populateTypes(model);
 
         model.addAttribute("serviceOrder", serviceOrder);
-        model.addAttribute("serviceDevices", serviceOrder.getServiceDevices());
-        model.addAttribute("serviceParts", serviceOrder.getServiceParts());
-        model.addAttribute("serviceActions", serviceOrder.getServiceActions());
+        populateRelations(model, serviceOrder);
 
         model.addAttribute("newServiceDevice", new ServiceDevice());
         model.addAttribute("newServicePart", new ServicePart());
         model.addAttribute("newServiceAction", new ServiceAction());
 
         return SERVICE_ORDER_FORM_TEMPLATE;
+    }
+
+    private void populateRelations(Model model, ServiceOrder serviceOrder) {
+        model.addAttribute("allServiceDevices", serviceOrder.getServiceDevices());
+        model.addAttribute("allServiceParts", serviceOrder.getServiceParts());
+        model.addAttribute("allServiceActions", serviceOrder.getServiceActions());
     }
 
     private void populateTypes(Model model) {
@@ -96,10 +107,7 @@ public class ServiceOrderController {
 
         if(bindingResult.hasErrors()) {
             populateTypes(model);
-
-            model.addAttribute("serviceDevices", serviceOrder.getServiceDevices());
-            model.addAttribute("serviceParts", serviceOrder.getServiceParts());
-            model.addAttribute("serviceActions", serviceOrder.getServiceActions());
+            populateRelations(model, serviceOrder);
 
             model.addAttribute("newServiceDevice", new ServiceDevice());
             model.addAttribute("newServicePart", new ServicePart());
@@ -196,9 +204,7 @@ public class ServiceOrderController {
             populateTypes(model);
 
             model.addAttribute("serviceOrder", serviceOrder);
-            model.addAttribute("serviceDevices", serviceOrder.getServiceDevices());
-            model.addAttribute("serviceParts", serviceOrder.getServiceParts());
-            model.addAttribute("serviceActions", serviceOrder.getServiceActions());
+            populateRelations(model, serviceOrder);
 
             model.addAttribute("newServiceDevice", new ServiceDevice());
             model.addAttribute("newServiceAction", new ServiceAction());
@@ -225,9 +231,7 @@ public class ServiceOrderController {
             populateTypes(model);
 
             model.addAttribute("serviceOrder", serviceOrder);
-            model.addAttribute("serviceDevices", serviceOrder.getServiceDevices());
-            model.addAttribute("serviceParts", serviceOrder.getServiceParts());
-            model.addAttribute("serviceActions", serviceOrder.getServiceActions());
+            populateRelations(model, serviceOrder);
 
             model.addAttribute("newServiceDevice", new ServiceDevice());
             model.addAttribute("newServicePart", new ServicePart());

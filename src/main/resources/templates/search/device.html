@@ -9,17 +9,65 @@
 </head>
 <body>
 
-<div class="container-fluid">
+<div class="container-fluid" th:unless="${deviceCreatedSuccessfully}">
     <h3>Seadme otsimine</h3>
 
-    <form method="post" th:object="${device}">
+    <form method="POST" th:object="${device}">
         <div class="form-group">
             <input autofocus="true" autocomplete="off" type="text" class="form-control" th:field="*{name}" placeholder="Nimi"/>
         </div>
     </form>
 
-    <hr/>
+    <h4>Loo uus seade</h4>
 
+    <form method="POST" th:action="@{/search/device/create}" th:object="${newDevice}">
+        <fieldset class="form-group"
+                  th:classappend="${#fields.hasErrors('name')}? has-danger">
+            <input type="text" class="form-control" th:field="*{name}" placeholder="Nimi"/>
+            <div th:errors="${newDevice.name}"></div>
+        </fieldset>
+
+        <fieldset class="form-group"
+                  th:classappend="${#fields.hasErrors('type')}? has-danger">
+            <select class="form-control" th:field="*{type}">
+                <option th:each="deviceType : ${deviceTypes}"
+                        th:value="${deviceType.id}"
+                        th:text="${deviceType.name}"
+                        th:disabled="${deviceType.level == 1}"></option>
+            </select>
+            <div th:errors="${newDevice.type}"></div>
+        </fieldset>
+
+        <fieldset class="form-group"
+                  th:classappend="${#fields.hasErrors('regNumber')}? has-danger">
+            <input type="text" class="form-control" th:field="*{regNumber}" placeholder="Reg. number"/>
+            <div th:errors="${newDevice.regNumber}"></div>
+        </fieldset>
+
+        <fieldset class="form-group"
+                  th:classappend="${#fields.hasErrors('model')}? has-danger">
+            <input type="text" class="form-control" th:field="*{model}" placeholder="Mudel"/>
+            <div th:errors="${newDevice.model}"></div>
+        </fieldset>
+
+        <fieldset class="form-group"
+                  th:classappend="${#fields.hasErrors('manufacturer')}? has-danger">
+            <input type="text" class="form-control" th:field="*{manufacturer}" placeholder="Tootja"/>
+            <div th:errors="${newDevice.manufacturer}"></div>
+        </fieldset>
+
+        <fieldset class="form-group"
+                  th:classappend="${#fields.hasErrors('description')}? has-danger">
+            <textarea class="form-control" th:field="*{description}" placeholder="Kirjeldus"/>
+            <div th:errors="${newDevice.description}"></div>
+        </fieldset>
+
+        <fieldset class="form-group">
+            <button class="btn btn-primary">Salvesta</button>
+        </fieldset>
+    </form>
+
+    <hr/>
 
     <div class="list-group">
         <a class="list-group-item"
@@ -29,18 +77,28 @@
             <span class="label label-primary label-pill pull-xs-right" th:text="${device.regNumber}"/>
             <span th:text="${device.name}"/> <small th:text="${device.type.name}"/></a>
     </div>
-
-    <script>
-        function chooseResult(event) {
-            const { id } = event.target.dataset;
-
-            const callback = window.opener.deviceSearchResultChosen;
-
-            if(typeof callback === "function")
-                callback(id);
-        }
-    </script>
 </div>
+
+<script>
+    function chooseResult(event) {
+        const { id } = event.target.dataset;
+
+        const callback = window.opener.deviceSearchResultChosen;
+
+        if(typeof callback === "function")
+            callback(id);
+    }
+</script>
+
+<script th:inline="javascript" th:if="${deviceCreatedSuccessfully}">
+    chooseResult({
+        target: {
+            dataset: {
+                id: /*[[${device.id}]]*/
+            }
+        }
+    });
+</script>
 
 </body>
 </html>

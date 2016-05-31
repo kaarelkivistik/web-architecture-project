@@ -20,7 +20,7 @@
                         <select class="form-control form-control-sm" th:field="*{serviceParts[__${iterator.index}__].serviceDevice}">
                             <option value="">Puudub</option>
 
-                            <option th:each="serviceDevice : ${serviceOrder.serviceDevices}"
+                            <option th:each="serviceDevice : ${allServiceDevices}"
                                     th:value="${serviceDevice.id}" th:text="${serviceDevice.device.name}"/>
                         </select>
                         <div th:errors="${serviceOrder.serviceParts[__${iterator.index}__].serviceDevice}"></div>

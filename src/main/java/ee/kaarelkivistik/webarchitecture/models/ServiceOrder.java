@@ -52,7 +52,7 @@ public class ServiceOrder {
 
     private String note;
 
-    @OneToMany(mappedBy = "serviceOrder")
+    @OneToMany(mappedBy = "serviceOrder", fetch = FetchType.EAGER)
     @Valid
     List<ServiceDevice> serviceDevices = new ArrayList<>();
 

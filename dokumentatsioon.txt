@@ -1,0 +1,9 @@
+Ärireeglid
+
+1. Tellimuse saab märkida "Valmis" olekusse ainult siis, kui kõik tellimusega seotud seadmed on "Valmis" olekus.
+
+2. Kui tellimusega pole seotud ühtegi seadet, siis tellimuse olek saab olla ainult "Töö vastu võetud".
+
+3. Kui varuosaga on seotud seerianumber, ei tohi koguseks olla muu number kui 1.
+
+4. Varuosa kogus saab olla minimaalselt 0.

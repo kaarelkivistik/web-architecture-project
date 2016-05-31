@@ -2,6 +2,7 @@ package ee.kaarelkivistik.webarchitecture.dao;
 
 import ee.kaarelkivistik.webarchitecture.models.DeviceType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by kaarel on 23.05.16.
@@ -57,6 +59,14 @@ public class DeviceTypeDAO {
         }
     }
 
+    public List<DeviceType> findAll() {
+        try {
+            return jdbcTemplate.query("SELECT device_type_id, level, type_name, super_type_id FROM device_type d", rowMapper);
+        } catch(DataAccessException e) {
+            return null;
+        }
+    }
+
 }
 
 @Component
@@ -66,7 +76,7 @@ class DeviceTypeRowMapper implements RowMapper<DeviceType> {
     public DeviceType mapRow(ResultSet resultSet, int i) throws SQLException {
         DeviceType deviceType = new DeviceType(resultSet.getShort("level"), resultSet.getString("type_name"));
 
-        deviceType.setId(resultSet.getInt("device_type"));
+        deviceType.setId(resultSet.getInt("device_type_id"));
 
         return deviceType;
     }

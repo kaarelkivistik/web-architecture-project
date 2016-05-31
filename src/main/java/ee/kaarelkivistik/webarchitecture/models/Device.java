@@ -1,6 +1,7 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.rest.core.config.Projection;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class Device {
 
     @Size(max = 100)
     @NotNull
+    @NotEmpty
     private String name;
 
     @OneToOne
@@ -32,6 +34,7 @@ public class Device {
     @Size(max = 100)
     @Column(name = "reg_no")
     @NotNull
+    @NotEmpty
     private String regNumber;
 
     private String description;
@@ -41,6 +44,7 @@ public class Device {
 
     @Size(max = 100)
     @NotNull
+    @NotEmpty
     private String manufacturer;
 
     public Device() {
