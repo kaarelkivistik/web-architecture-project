@@ -1,5 +1,6 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -34,6 +35,7 @@ public class ServiceAction {
 
     @OneToOne
     @JoinColumn(name = "service_order_id")
+    @JsonBackReference
     private ServiceOrder serviceOrder;
 
     @NotNull

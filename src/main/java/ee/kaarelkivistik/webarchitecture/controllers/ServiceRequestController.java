@@ -193,4 +193,9 @@ public class ServiceRequestController {
         return "redirect:/service-requests/" + serviceRequest.getId();
     }
 
+    @RequestMapping("customer")
+    public String showCustomerForm() {
+        return "customer-service-requests";
+    }
+
 }

@@ -1,5 +1,9 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -31,6 +35,7 @@ public class ServiceOrder {
 
     @OneToOne
     @JoinColumn(name = "service_request_id")
+    @JsonIgnore
     private ServiceRequest serviceRequest;
 
     @Column(name = "created")
@@ -54,14 +59,17 @@ public class ServiceOrder {
 
     @OneToMany(mappedBy = "serviceOrder", fetch = FetchType.EAGER)
     @Valid
+    @JsonManagedReference
     List<ServiceDevice> serviceDevices = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceOrder")
     @Valid
+    @JsonManagedReference
     List<ServicePart> serviceParts = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceOrder")
     @Valid
+    @JsonManagedReference
     List<ServiceAction> serviceActions = new ArrayList<>();
 
     public ServiceOrder() {}

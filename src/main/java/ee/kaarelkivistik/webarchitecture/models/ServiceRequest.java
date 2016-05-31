@@ -1,5 +1,7 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -21,6 +23,7 @@ public class ServiceRequest {
 
     @OneToOne
     @JoinColumn(name = "service_request_status_type_id")
+    @JsonIgnore
     private ServiceRequestStatusType statusType;
 
     @OneToOne
@@ -43,6 +46,7 @@ public class ServiceRequest {
     private String descriptionByEmployee;
 
     @OneToOne(mappedBy = "serviceRequest")
+    @JsonManagedReference
     private ServiceOrder serviceOrder;
 
     public Integer getId() {

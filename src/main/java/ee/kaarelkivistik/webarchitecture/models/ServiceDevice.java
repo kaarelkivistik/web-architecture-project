@@ -1,5 +1,6 @@
 package ee.kaarelkivistik.webarchitecture.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -21,6 +22,7 @@ public class ServiceDevice {
 
     @OneToOne
     @JoinColumn(name = "service_order_id")
+    @JsonBackReference
     private ServiceOrder serviceOrder;
 
     @OneToOne

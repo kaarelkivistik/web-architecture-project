@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Remondiaktid</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="/resources/bootstrap.min.css" />
+    <link rel="stylesheet" href="/resources/styles.css" />
+</head>
+<body>
+
+    <div class="container">
+        <div th:replace="fragments :: #header"/>
+
+        <div class="content">
+            <div class="table-responsive">
+                <table class="table" id="serviceRequests">
+                    <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Klient</th>
+                        <th>Töötaja</th>
+                        <th>Päring</th>
+                        <th>Tellimus</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        fetch("http://localhost:8080/rest/service-requests").then(function(response) {
+           response.json().then(function(result) {
+               console.log(result);
+           });
+        });
+    </script>
+
+</body>
+</html>
